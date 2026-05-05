@@ -7,9 +7,9 @@ ________________________________________________________
 
 Test classes: 5
 Test cases total: 21
-Done test cases: 18
+Done test cases: 21
 
-current status: in progress
+current status: Done
 """
 
 import json
@@ -419,29 +419,84 @@ class TestBookJsonFileServiceUpdateBookData(unittest.TestCase):  # 7/7
                 break
 
 
-class TestBookJsonFileServiceDeleteBookById(unittest.TestCase):  # 0/3
+class TestBookJsonFileServiceDeleteBookById(unittest.TestCase):  # 3/3
     """Method under test: delete_book_by_id
-    Number of TestCases:
-    Done TestCases:
+    Number of TestCases: 3
+    Done TestCases: 3
     """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_book_list = [
+            {
+                "book_id": 1001,
+                "author": "Stephen King",
+                "title": "It",
+                "publication_year": 1986,
+            },
+            {
+                "book_id": 1002,
+                "author": "Frank Herbert",
+                "title": "Dune",
+                "publication_year": 1965,
+            },
+            {
+                "book_id": 1003,
+                "author": "Jane Austen",
+                "title": "Emma",
+                "publication_year": 1815,
+            },
+            {
+                "book_id": 1004,
+                "author": "Peter Benchley",
+                "title": "Jaws",
+                "publication_year": 1974,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_book_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=book_schema
+        )
+        self.book_service = BookJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_book_id_is_none(self):
         """expected behavior: raises ValidationError when book_id is missing or it's an empty value."""
-        pass
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.book_service.delete_book_by_id(book_id=None)
+
+        self.assertIn("Book ID is missing", str(cm.exception))
 
     def test_raises_book_not_found_error_when_book_id_not_found(self):
         """expected behavior: raises BookNotFoundError when book_id is not found in the database."""
-        pass
+        with self.assertRaises(exc.BookNotFoundError) as cm:
+            self.book_service.delete_book_by_id(book_id=2222)
+
+        self.assertIn("could not be removed", str(cm.exception))
 
     def test_removes_book_and_writes_json_when_book_id_exists(self):
         """expected behavior: removes book record from the database and writes updated data to json file when book_id exists in the database."""
-        pass
+        test_result = self.book_service.delete_book_by_id(book_id=1001)
+
+        self.assertIn("has been deleted from the database", str(test_result))
+
+        with self.test_json_file_path.open("r", encoding="utf-8") as f:
+            updated_book_data = json.load(f)
+
+        self.assertEqual(len(updated_book_data), 3)
+
+        for book in updated_book_data:
+            self.assertNotEqual(book.get("book_id"), 1001)
 
 
 if __name__ == "__main__":
