@@ -19,6 +19,7 @@ from pathlib import Path
 
 import exceptions as exc
 from database.json_files_major_services import JsonFilesService
+from database.database_schemes import loan_schema
 from database.loan_json_file_service import LoanJsonFileService
 
 
@@ -30,6 +31,37 @@ class TestLoanJsonFileServiceGetLoanData(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_loan_list = [
+            {
+                "loan_id": 9001,
+                "user_id": 112233,
+                "book_id": 1001,
+                "loan_date": "2026-05-05",
+            },
+            {
+                "loan_id": 9002,
+                "user_id": 112244,
+                "book_id": 1002,
+                "loan_date": "2026-04-05",
+            },
+            {
+                "loan_id": 9003,
+                "user_id": 112255,
+                "book_id": 1003,
+                "loan_date": "2025-05-15",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_loan_list, f)
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+        self.loan_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -56,6 +88,36 @@ class TestLoanJsonFileServiceAddLoanData(unittest.TestCase):  # 0/5
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_loan_list = [
+            {
+                "loan_id": 9001,
+                "user_id": 112233,
+                "book_id": 1001,
+                "loan_date": "2026-05-05",
+            },
+            {
+                "loan_id": 9002,
+                "user_id": 112244,
+                "book_id": 1002,
+                "loan_date": "2026-04-05",
+            },
+            {
+                "loan_id": 9003,
+                "user_id": 112255,
+                "book_id": 1003,
+                "loan_date": "2025-05-15",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_loan_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=loan_schema
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -86,6 +148,13 @@ class TestLoanJsonFileServiceGetAllLoansList(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+        self.loan_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -108,6 +177,40 @@ class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):  # 0/7
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_loan_list = [
+            {
+                "loan_id": 9001,
+                "user_id": 112233,
+                "book_id": 1001,
+                "loan_date": "2026-05-05",
+            },
+            {
+                "loan_id": 9002,
+                "user_id": 112244,
+                "book_id": 1002,
+                "loan_date": "2026-04-05",
+            },
+            {
+                "loan_id": 9003,
+                "user_id": 112255,
+                "book_id": 1003,
+                "loan_date": "2025-05-15",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_loan_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=loan_schema
+        )
+
+        self.loan_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -144,6 +247,40 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_loan_list = [
+            {
+                "loan_id": 9001,
+                "user_id": 112233,
+                "book_id": 1001,
+                "loan_date": "2026-05-05",
+            },
+            {
+                "loan_id": 9002,
+                "user_id": 112244,
+                "book_id": 1002,
+                "loan_date": "2026-04-05",
+            },
+            {
+                "loan_id": 9003,
+                "user_id": 112255,
+                "book_id": 1003,
+                "loan_date": "2025-05-15",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_loan_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=loan_schema
+        )
+
+        self.loan_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
