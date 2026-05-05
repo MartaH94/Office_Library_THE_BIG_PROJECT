@@ -6,15 +6,10 @@ Test for the file user_json_file_service.py
 ________________________________________________________
 
 Test classes: 5
-Test cases total: 20
+Test cases total: 21
 
 current status: not started
 Total number of done test cases:
-
-TO DO:
-Verify existing test cases
-Add new test cases if needed
-
 """
 
 import json
@@ -27,7 +22,7 @@ from database.loan_json_file_service import LoanJsonFileService
 from database.user_json_file_service import UsersJsonFileService
 
 
-class TestUserServiceGetUserData(unittest.TestCase):
+class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
     """Method under test: get_user_data
     Number of TestCases: 3
     Done TestCases:
@@ -39,17 +34,17 @@ class TestUserServiceGetUserData(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_returns_user_data_when_id_exists(self):
-        pass
-
     def test_raises_validation_error_when_user_id_is_none(self):
         pass
 
-    def test_raises_user_not_found_error_when_id_does_not_exist(self):
+    def test_returns_user_data_when_id_exists(self):
+        pass
+
+    def test_raises_user_not_found_error_when_user_id_not_found(self):
         pass
 
 
-class TestUserServiceAddUserData(unittest.TestCase):
+class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
     """Method under test: add_user_data
     Number of TestCases: 5
     Done TestCases:
@@ -61,9 +56,6 @@ class TestUserServiceAddUserData(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_appends_validated_user_data_and_writes_to_file(self):
-        pass
-
     def test_raises_validation_error_when_user_data_is_missing(self):
         pass
 
@@ -73,11 +65,16 @@ class TestUserServiceAddUserData(unittest.TestCase):
     def test_raises_user_error_when_user_id_already_exists(self):
         pass
 
-    def test_raises_user_validation_error_when_schema_validation_fails(self):
+    def test_raises_user_validation_error_when_schema_validation_raises_validation_error(
+        self,
+    ):
+        pass
+
+    def test_writes_json_and_returns_success_message_when_data_is_valid(self):
         pass
 
 
-class TestUserServiceGetAllUsersList(unittest.TestCase):
+class TestUserServiceGetAllUsersList(unittest.TestCase):  # 0/3
     """Method under test: get_all_users_list
     Number of TestCases: 3
     Done TestCases:
@@ -89,19 +86,19 @@ class TestUserServiceGetAllUsersList(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_returns_all_users_when_user_name_present(self):
+    def test_returns_all_users_list_for_valid_user_dicts(self):
         pass
 
-    def test_raises_user_not_found_error_when_user_name_missing_or_empty(self):
+    def test_raises_user_not_found_error_when_database_is_empty(self):
         pass
 
-    def test_raises_user_not_found_error_when_does_not_exists(self):
+    def test_raises_user_not_found_error_when_no_valid_user_entries_exist(self):
         pass
 
 
-class TestUserServiceUpdateUserData(unittest.TestCase):
+class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
     """Method under test: update_user_data
-    Number of TestCases: 6
+    Number of TestCases: 7
     Done TestCases:
     """
 
@@ -110,9 +107,6 @@ class TestUserServiceUpdateUserData(unittest.TestCase):
 
     def tearDown(self):
         self.temporary_dir.cleanup()
-
-    def test_updates_existing_user_field_and_writes_data(self):
-        pass
 
     def test_raises_validation_error_when_user_id_is_none(self):
         pass
@@ -123,14 +117,22 @@ class TestUserServiceUpdateUserData(unittest.TestCase):
     def test_raises_validation_error_when_new_value_is_none(self):
         pass
 
-    def test_raises_validation_error_when_field_missing_in_user_entry(self):
+    def test_raises_validation_error_when_field_not_in_user(self):
         pass
 
     def test_raises_user_not_found_error_when_user_id_not_found(self):
         pass
 
+    def test_raises_user_validation_error_when_updated_user_data_fails_schema_validation(
+        self,
+    ):
+        pass
 
-class TestUserServiceDeleteUserById(unittest.TestCase):
+    def test_updates_user_field_and_writes_json_when_data_is_valid(self):
+        pass
+
+
+class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
     """Method under test: delete_user_by_id
     Number of TestCases: 3
     Done TestCases:
@@ -142,11 +144,11 @@ class TestUserServiceDeleteUserById(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_removes_user_when_id_exists_and_writes_data(self):
-        pass
-
     def test_raises_validation_error_when_user_id_is_none(self):
         pass
 
-    def test_raises_user_error_when_user_id_not_found_for_deletion(self):
+    def test_raises_user_not__found_error_when_user_id_not_found(self):
+        pass
+
+    def test_removes_user_and_writes_json_when_user_id_exists(self):
         pass

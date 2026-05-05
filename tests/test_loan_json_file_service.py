@@ -6,14 +6,10 @@ Test for the file loan_json_file_service.py
 ________________________________________________________
 
 Test classes: 5
-Test cases total: 20
+Test cases total: 21
 
 current status: not started
 Total number of done test cases:
-
-TO DO:
-Verify existing test cases
-Add new test cases if needed
 """
 
 import json
@@ -26,7 +22,7 @@ from database.json_files_major_services import JsonFilesService
 from database.loan_json_file_service import LoanJsonFileService
 
 
-class TestLoanJsonFileServiceGetLoanData(unittest.TestCase):
+class TestLoanJsonFileServiceGetLoanData(unittest.TestCase):  # 0/3
     """Method under test: get_loan_data
     Number of TestCases: 3
     Done TestCases:
@@ -38,20 +34,24 @@ class TestLoanJsonFileServiceGetLoanData(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_returns_matching_record_for_existing_id(self):
+    def test_raises_validation_error_when_loan_id_is_none(self):
         pass
 
-    def test_raises_validation_error_when_loan_id_is_none(self):
+    def test_returns_loan_when_loan_id_exists(self):
         pass
 
     def test_raises_loan_not_found_error_when_loan_id_not_found(self):
         pass
 
 
-class TestLoanJsonFileServiceAddLoanData(unittest.TestCase):
+class TestLoanJsonFileServiceAddLoanData(unittest.TestCase):  # 0/5
     """Method under test: add_loan_data
     Number of TestCases: 5
     Done TestCases:
+
+    Reminder for later implementation:
+    - Use only required fields in valid loan data
+    - Use valid "YYYY-MM-DD" strings for dates
     """
 
     def setUp(self):
@@ -59,9 +59,6 @@ class TestLoanJsonFileServiceAddLoanData(unittest.TestCase):
 
     def tearDown(self):
         self.temporary_dir.cleanup()
-
-    def test_appends_valid_loan_and_writes_file(self):
-        pass
 
     def test_raises_validation_error_when_loan_data_is_missing(self):
         pass
@@ -72,13 +69,18 @@ class TestLoanJsonFileServiceAddLoanData(unittest.TestCase):
     def test_raises_loan_error_when_loan_id_already_exists(self):
         pass
 
-    def test_raises_loan_validation_error_when_schema_validation_fails(self):
+    def test_raises_loan_validation_error_when_schema_validation_raises_validation_error(
+        self,
+    ):
+        pass
+
+    def test_writes_json_and_returns_success_message_when_data_is_valid(self):
         pass
 
 
-class TestLoanJsonFileServiceGetAllLoansList(unittest.TestCase):
+class TestLoanJsonFileServiceGetAllLoansList(unittest.TestCase):  # 0/3
     """Method under test: get_all_loans_list
-    Number of TestCases: 2
+    Number of TestCases: 3
     Done TestCases:
     """
 
@@ -88,16 +90,19 @@ class TestLoanJsonFileServiceGetAllLoansList(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_returns_list_when_file_content_is_list(self):
+    def test_returns_all_loans_valid_loan_dicts_as_list(self):
         pass
 
-    def test_raises_data_type_error_when_file_content_is_not_list(self):
+    def test_raises_loan_not_found_error_when_database_is_empty(self):
+        pass
+
+    def test_raises_loan_not_found_error_when_no_valid_loan_entries_exist(self):
         pass
 
 
-class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):
+class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):  # 0/7
     """Method under test: update_loan_data
-    Number of TestCases: 6
+    Number of TestCases: 7
     Done TestCases:
     """
 
@@ -106,9 +111,6 @@ class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):
 
     def tearDown(self):
         self.temporary_dir.cleanup()
-
-    def test_updates_field_and_writes_file_when_loan_exists(self):
-        pass
 
     def test_raises_validation_error_when_loan_id_is_none(self):
         pass
@@ -122,13 +124,21 @@ class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):
     def test_raises_validation_error_when_field_not_in_loan(self):
         pass
 
-    def test_raises_loan_not_found_error_when_load_id_not_found(self):
+    def test_raises_loan_not_found_error_when_loan_id_not_found(self):
+        pass
+
+    def test_raises_book_validation_error_when_updated_loan_data_fails_schema_validation(
+        self,
+    ):
+        pass
+
+    def test_updates_loan_field_and_writes_json_when_data_is_valid(self):
         pass
 
 
-class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):
+class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 0/3
     """Method under test: delete_loan_data
-    Number of TestCases: 4
+    Number of TestCases: 3
     Done TestCases:
     """
 
@@ -138,14 +148,11 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):
     def tearDown(self):
         self.temporary_dir.cleanup()
 
-    def test_removes_loan_and_writes_file_when_id_exists(self):
-        pass
-
     def test_raises_validation_error_when_loan_id_is_none(self):
         pass
 
-    def test_raises_data_type_error_when_loan_id_is_not_int(self):
+    def test_raises_loan_not_found_error_when_loan_id_not_found(self):
         pass
 
-    def test_raises_loan_not_found_error_when_loan_id_not_found(self):
+    def test_removes_loan_and_writes_file_when_loan_id_exists(self):
         pass
