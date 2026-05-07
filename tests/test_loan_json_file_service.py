@@ -8,8 +8,8 @@ ________________________________________________________
 Test classes: 5
 Test cases total: 21
 
-current status: in progress
-Total number of done test cases:
+current status: Done
+Total number of done test cases: 21
 """
 
 import json
@@ -268,10 +268,10 @@ class TestLoanJsonFileServiceGetAllLoansList(unittest.TestCase):  # 3/3
         self.assertIn("No loan found", str(cm.exception))
 
 
-class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):  # 0/7
+class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):  # 7/7
     """Method under test: update_loan_data
     Number of TestCases: 7
-    Done TestCases:
+    Done TestCases: 7
     """
 
     def setUp(self):
@@ -385,10 +385,10 @@ class TestLoanJsonFileServiceUpdateLoanData(unittest.TestCase):  # 0/7
                 break
 
 
-class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 0/3
+class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 3/3
     """Method under test: delete_loan_data
     Number of TestCases: 3
-    Done TestCases:
+    Done TestCases: 3
     """
 
     def setUp(self):
