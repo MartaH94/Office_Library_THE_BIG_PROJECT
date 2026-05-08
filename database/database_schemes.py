@@ -3,6 +3,7 @@ Each schema is represented as a dictionary where keys are field names and values
 
 
 "date" fields must be strings in YYYY-MM-DD format
+"datetime" fields must be strings in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
 """
 
 from models.user import valid_roles
@@ -26,7 +27,7 @@ user_schema = {
             "required": ["user_name", "email"],
         },
     },
-    "required": ["user_id", "role", "user_profile"],
+    "required": ["user_id", "role", "user_profile", "is_active"],
 }
 
 

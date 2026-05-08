@@ -8,8 +8,9 @@ ________________________________________________________
 Test classes: 5
 Test cases total: 21
 
-current status: not started
+current status: In progress
 Total number of done test cases:
+
 """
 
 import json
@@ -18,8 +19,9 @@ import unittest
 from pathlib import Path
 
 import exceptions as exc
-from database.loan_json_file_service import LoanJsonFileService
 from database.user_json_file_service import UsersJsonFileService
+from database.database_schemes import user_schema
+from database.json_files_major_services import JsonFilesService
 
 
 class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
@@ -30,6 +32,42 @@ class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_user_list = [
+            {
+                "user_id": 112233,
+                "role": "reader",
+                "user_profile": {
+                    "user_name": "test_user",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222333,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+            {
+                "user_id": 112244,
+                "role": "guest",
+                "user_profile": {
+                    "user_name": "test_librarian_guest",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222334,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_user_list, f)
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+
+        self.user_service = UsersJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -52,6 +90,44 @@ class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_user_list = [
+            {
+                "user_id": 112233,
+                "role": "reader",
+                "user_profile": {
+                    "user_name": "test_user",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222333,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+            {
+                "user_id": 112244,
+                "role": "guest",
+                "user_profile": {
+                    "user_name": "test_librarian_guest",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222334,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_user_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=user_schema
+        )
+
+        self.user_service = UsersJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -82,12 +158,46 @@ class TestUserServiceGetAllUsersList(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+
+        self.user_service = UsersJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
 
     def test_returns_all_users_list_for_valid_user_dicts(self):
-        pass
+        valid_user_list = [
+            {
+                "user_id": 112233,
+                "role": "reader",
+                "user_profile": {
+                    "user_name": "test_user",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222333,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+            {
+                "user_id": 112244,
+                "role": "guest",
+                "user_profile": {
+                    "user_name": "test_librarian_guest",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222334,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(valid_user_list, f)
 
     def test_raises_user_not_found_error_when_database_is_empty(self):
         pass
@@ -104,6 +214,44 @@ class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_user_list = [
+            {
+                "user_id": 112233,
+                "role": "reader",
+                "user_profile": {
+                    "user_name": "test_user",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222333,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+            {
+                "user_id": 112244,
+                "role": "guest",
+                "user_profile": {
+                    "user_name": "test_librarian_guest",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222334,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_user_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=user_schema
+        )
+
+        self.user_service = UsersJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
@@ -140,6 +288,42 @@ class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_user_list = [
+            {
+                "user_id": 112233,
+                "role": "reader",
+                "user_profile": {
+                    "user_name": "test_user",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222333,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+            {
+                "user_id": 112244,
+                "role": "guest",
+                "user_profile": {
+                    "user_name": "test_librarian_guest",
+                    "email": "testuser@test.com",
+                    "phone_number": 111222334,
+                    "password_hash": "password",
+                },
+                "is_active": True,
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_user_list, f)
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+
+        self.user_service = UsersJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
