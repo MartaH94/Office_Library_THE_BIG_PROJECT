@@ -121,3 +121,4 @@ database/__pycache__/book_json_file_service.cpython-313.pyc
 tests/__pycache__/test_book_json_file_service.cpython-313.pyc
 database/__pycache__/loan_json_file_service.cpython-313.pyc
 tests/__pycache__/test_user_json_file_service.cpython-313.pyc
+database/__pycache__/user_json_file_service.cpython-313.pyc
