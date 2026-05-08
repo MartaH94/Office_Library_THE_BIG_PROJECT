@@ -204,7 +204,7 @@ class TestBookJsonFileServiceAddBookData(unittest.TestCase):  # 5/5
 
         self.assertIn("Added new book to data base", result)
 
-        with self.test_json_file_path.open() as f:
+        with self.test_json_file_path.open("r", encoding="utf-8") as f:
             self.assertIn(data_to_append, json.load(f))
 
 
@@ -386,7 +386,7 @@ class TestBookJsonFileServiceUpdateBookData(unittest.TestCase):  # 7/7
         """expected behavior: raises BookNotFoundError when book_id is not found in the database."""
         with self.assertRaises(exc.BookNotFoundError) as cm:
             self.book_service.update_book_data(
-                book_id=1010, field="titile", new_value="The Hobbit"
+                book_id=1010, field="title", new_value="The Hobbit"
             )
 
         self.assertIn("not found in database", str(cm.exception))
