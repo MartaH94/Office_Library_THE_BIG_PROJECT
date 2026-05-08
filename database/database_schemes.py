@@ -4,6 +4,9 @@ Each schema is represented as a dictionary where keys are field names and values
 
 "date" fields must be strings in YYYY-MM-DD format
 "datetime" fields must be strings in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+
+
+Problem to solve: Password field in user schema must be required for all user roles' except guest role.
 """
 
 from models.user import valid_roles
