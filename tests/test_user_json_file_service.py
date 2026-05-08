@@ -24,10 +24,10 @@ from database.database_schemes import user_schema
 from database.json_files_major_services import JsonFilesService
 
 
-class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
+class TestUserServiceGetUserData(unittest.TestCase):  # 3/3
     """Method under test: get_user_data
     Number of TestCases: 3
-    Done TestCases:
+    Done TestCases: 3
     """
 
     def setUp(self):
@@ -74,16 +74,23 @@ class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
 
     def test_raises_validation_error_when_user_id_is_none(self):
         """expected behavior: raises ValidationError when user_id is None"""
-        pass
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.user_service.get_user_data(None)
+
+        self.assertIn("User ID is missing", str(cm.exception))
 
     def test_returns_user_data_when_id_exists(self):
         """expected behavior: returns user data dict when user_id exists in database"""
-        pass
+        expected_user_data = self.valid_user_list[0]
+        test_result = self.user_service.get_user_data(112233)
+        self.assertEqual(test_result, expected_user_data)
 
     def test_raises_user_not_found_error_when_user_id_not_found(self):
         """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
+        with self.assertRaises(exc.UserNotFoundError) as cm:
+            self.user_service.get_user_data(101010)
 
-        pass
+        self.assertIn("does not exist in database", str(cm.exception))
 
 
 class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
@@ -111,9 +118,9 @@ class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
             },
             {
                 "user_id": 112244,
-                "role": "guest",
+                "role": "librarian",
                 "user_profile": {
-                    "user_name": "test_librarian_guest",
+                    "user_name": "test_librarian",
                     "email": "testuser@test.com",
                     "phone_number": 111222334,
                     "password_hash": "password",
@@ -138,15 +145,38 @@ class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
 
     def test_raises_validation_error_when_user_data_is_missing(self):
         """expected behavior: raises ValidationError when user_data is missing or it's an empty value"""
-        pass
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.user_service.add_user_data(None)
+
+        self.assertIn("User data to add is missing", str(cm.exception))
 
     def test_raises_data_type_error_when_user_data_is_not_dict(self):
         """expected behavior: raises DataTypeError when user_data is not a dict"""
-        pass
+        data_to_add = [112277, "reader", "testuser1", True]
+
+        with self.assertRaises(exc.DataTypeError) as cm:
+            self.user_service.add_user_data(data_to_add)
+
+        self.assertIn("User data type is incorrect", str(cm.exception))
 
     def test_raises_user_error_when_user_id_already_exists(self):
         """expected behavior: raises UserError when user_id in user_data already exists in database"""
-        pass
+        data_to_add = {
+            "user_id": 112233,
+            "role": "reader",
+            "user_profile": {
+                "user_name": "test_user",
+                "email": "testuser@test.com",
+                "phone_number": 111222333,
+                "password_hash": "password",
+            },
+            "is_active": True,
+        }
+
+        with self.assertRaises(exc.UserError) as cm:
+            self.user_service.add_user_data(data_to_add)
+
+        self.assertIn("User ID must be unique value", str(cm.exception))
 
     def test_raises_user_validation_error_when_schema_validation_raises_validation_error(
         self,
@@ -358,3 +388,7 @@ class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
     def test_removes_user_and_writes_json_when_user_id_exists(self):
         """expected behavior: removes user entry from database and writes updated data to json file when user_id exists in database"""
         pass
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=0)
