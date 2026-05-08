@@ -8,8 +8,8 @@ ________________________________________________________
 Test classes: 5
 Test cases total: 21
 
-current status: In progress
-Total number of done test cases:
+current status: Done
+Total number of done test cases: 21
 
 """
 
@@ -298,10 +298,10 @@ class TestUserServiceGetAllUsersList(unittest.TestCase):  # 3/3
         self.assertIn("No user found in the database", str(cm.exception))
 
 
-class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
+class TestUserServiceUpdateUserData(unittest.TestCase):  # 7/7
     """Method under test: update_user_data
     Number of TestCases: 7
-    Done TestCases:
+    Done TestCases: 7
     """
 
     def setUp(self):
@@ -375,15 +375,6 @@ class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
 
         self.assertIn("New value to update data is missing", str(cm.exception))
 
-    # def test_raises_validation_error_when_field_not_in_user(self):
-    #     """expected behavior: raises ValidationError when field is not a valid user field"""
-    #     with self.assertRaises(exc.ValidationError) as cm:
-    #         self.user_service.update_user_data(
-    #             user_id=112233, field="status", new_value="active"
-    #         )
-
-    #     self.assertIn("missing in this user entry", str(cm.exception))
-
     def test_raises_user_not_found_error_when_user_id_not_found(self):
         """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
         with self.assertRaises(exc.UserNotFoundError) as cm:
@@ -393,21 +384,51 @@ class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
 
         self.assertIn("not found in database", str(cm.exception))
 
-    def test_raises_user_validation_error_when_updated_user_data_fails_schema_validation(
-        self,
-    ):
-        """expected behavior: raises UserValidationError when updated user data fails schema validation"""
-        pass
+    def test_raises_validation_error_when_nested_field_path_is_invalid(self):
+        """expected behavior: raises ValidationError when optional field path is invalid (e.g. "user_profile.invalid_field")"""
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.user_service.update_user_data(
+                user_id=112233, field="user_profile.address", new_value="new_value"
+            )
+
+        self.assertIn("is missing in this user entry", str(cm.exception))
+
+    def test_raises_user_validation_error_when_new_value_has_incorrect_type(self):
+        """expected behavior: raises UserValidationError when new_value has incorrect data type for the field being updated (e.g. new_value is int but expected type is str)"""
+        with self.assertRaises(exc.UserValidationError) as cm:
+            self.user_service.update_user_data(
+                user_id=112233,
+                field="user_profile.user_name",
+                new_value=["new_user_name"],
+            )
+
+        self.assertIn("incorrect data type", str(cm.exception))
 
     def test_updates_user_field_and_writes_json_when_data_is_valid(self):
         """expected behavior: updates user field with new value and writes updated data to json file when data is valid"""
-        pass
+        test_result = self.user_service.update_user_data(
+            user_id=112233,
+            field="user_profile.user_name",
+            new_value="updated_user_name",
+        )
+
+        self.assertIn("New data value has been saved for user", str(test_result))
+
+        with self.test_json_file_path.open("r", encoding="utf-8") as f:
+            updated_user_data = json.load(f)
+
+        for user in updated_user_data:
+            if user.get("user_id") == 112233:
+                self.assertEqual(
+                    user.get("user_profile", {}).get("user_name"), "updated_user_name"
+                )
+                break
 
 
-class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
+class TestUserServiceDeleteUserById(unittest.TestCase):  # 3/3
     """Method under test: delete_user_by_id
     Number of TestCases: 3
-    Done TestCases:
+    Done TestCases: 3
     """
 
     def setUp(self):
@@ -443,7 +464,9 @@ class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
         with self.test_json_file_path.open("w", encoding="utf-8") as f:
             json.dump(self.valid_user_list, f)
 
-        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=user_schema
+        )
 
         self.user_service = UsersJsonFileService(
             self.major_json_service, file_path=self.test_json_file_path
@@ -454,15 +477,31 @@ class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
 
     def test_raises_validation_error_when_user_id_is_none(self):
         """expected behavior: raises ValidationError when user_id is None"""
-        pass
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.user_service.delete_user_by_id(user_id=None)
+
+        self.assertIn("User ID is missing", str(cm.exception))
 
     def test_raises_user_not__found_error_when_user_id_not_found(self):
         """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
-        pass
+        with self.assertRaises(exc.UserNotFoundError) as cm:
+            self.user_service.delete_user_by_id(user_id=114477)
+
+        self.assertIn("could not be removed from", str(cm.exception))
 
     def test_removes_user_and_writes_json_when_user_id_exists(self):
         """expected behavior: removes user entry from database and writes updated data to json file when user_id exists in database"""
-        pass
+        test_result = self.user_service.delete_user_by_id(112233)
+
+        self.assertIn("has been deleted from database", str(test_result))
+
+        with self.test_json_file_path.open("r", encoding="utf-8") as f:
+            updated_user_data = json.load(f)
+
+        self.assertEqual(len(updated_user_data), 1)
+
+        for user in updated_user_data:
+            self.assertNotEqual(user.get("user_id"), 112233)
 
 
 if __name__ == "__main__":
