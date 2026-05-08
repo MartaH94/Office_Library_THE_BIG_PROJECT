@@ -73,12 +73,16 @@ class TestUserServiceGetUserData(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_user_id_is_none(self):
+        """expected behavior: raises ValidationError when user_id is None"""
         pass
 
     def test_returns_user_data_when_id_exists(self):
+        """expected behavior: returns user data dict when user_id exists in database"""
         pass
 
     def test_raises_user_not_found_error_when_user_id_not_found(self):
+        """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
+
         pass
 
 
@@ -133,20 +137,25 @@ class TestUserServiceAddUserData(unittest.TestCase):  # 0/5
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_user_data_is_missing(self):
+        """expected behavior: raises ValidationError when user_data is missing or it's an empty value"""
         pass
 
     def test_raises_data_type_error_when_user_data_is_not_dict(self):
+        """expected behavior: raises DataTypeError when user_data is not a dict"""
         pass
 
     def test_raises_user_error_when_user_id_already_exists(self):
+        """expected behavior: raises UserError when user_id in user_data already exists in database"""
         pass
 
     def test_raises_user_validation_error_when_schema_validation_raises_validation_error(
         self,
     ):
+        """expected behavior: raises UserValidationError when user_data fails schema validation"""
         pass
 
     def test_writes_json_and_returns_success_message_when_data_is_valid(self):
+        """expected behavior: writes user_data to json file and returns success message when data is valid"""
         pass
 
 
@@ -171,6 +180,7 @@ class TestUserServiceGetAllUsersList(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_returns_all_users_list_for_valid_user_dicts(self):
+        """expected behavior: returns list of all user dicts when valid user entries exist in database"""
         valid_user_list = [
             {
                 "user_id": 112233,
@@ -200,9 +210,11 @@ class TestUserServiceGetAllUsersList(unittest.TestCase):  # 0/3
             json.dump(valid_user_list, f)
 
     def test_raises_user_not_found_error_when_database_is_empty(self):
+        """expected behavior: raises UserNotFoundError when no user entries exist in database"""
         pass
 
     def test_raises_user_not_found_error_when_no_valid_user_entries_exist(self):
+        """expected behavior: raises UserNotFoundError when no valid user entries exist in database"""
         pass
 
 
@@ -257,26 +269,33 @@ class TestUserServiceUpdateUserData(unittest.TestCase):  # 0/7
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_user_id_is_none(self):
+        """expected behavior: raises ValidationError when user_id is None"""
         pass
 
     def test_raises_validation_error_when_field_is_none(self):
+        """expected behavior: raises ValidationError when field is None"""
         pass
 
     def test_raises_validation_error_when_new_value_is_none(self):
+        """expected behavior: raises ValidationError when new_value is None"""
         pass
 
     def test_raises_validation_error_when_field_not_in_user(self):
+        """expected behavior: raises ValidationError when field is not a valid user field"""
         pass
 
     def test_raises_user_not_found_error_when_user_id_not_found(self):
+        """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
         pass
 
     def test_raises_user_validation_error_when_updated_user_data_fails_schema_validation(
         self,
     ):
+        """expected behavior: raises UserValidationError when updated user data fails schema validation"""
         pass
 
     def test_updates_user_field_and_writes_json_when_data_is_valid(self):
+        """expected behavior: updates user field with new value and writes updated data to json file when data is valid"""
         pass
 
 
@@ -329,10 +348,13 @@ class TestUserServiceDeleteUserById(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_user_id_is_none(self):
+        """expected behavior: raises ValidationError when user_id is None"""
         pass
 
     def test_raises_user_not__found_error_when_user_id_not_found(self):
+        """expected behavior: raises UserNotFoundError when user_id does not exist in database"""
         pass
 
     def test_removes_user_and_writes_json_when_user_id_exists(self):
+        """expected behavior: removes user entry from database and writes updated data to json file when user_id exists in database"""
         pass
