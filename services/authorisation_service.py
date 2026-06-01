@@ -11,9 +11,13 @@ TO DO HERE:
 
 """
 
-import hashlib
 import exceptions as exc
 from models.user import User
+from utils.security_helpers import (
+    hash_password,
+    verify_password,
+    validate_password_strength,
+)
 
 # managing registration, login, permissions and authorisation of users
 
@@ -181,6 +185,7 @@ user_permissions = {
 }
 
 
+### I am here
 def user_registration(
     user_id, email, role, user_name, first_name, last_name, phone_number, password
 ):
