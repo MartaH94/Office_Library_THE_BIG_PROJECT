@@ -23,7 +23,7 @@ user_schema = {
                 "phone_number": int,
                 "password_hash": str,
             },
-            "required": ["user_name", "email"],
+            "required": ["user_name", "email", "password_hash"],
         },
     },
     "required": ["user_id", "role", "user_profile"],
