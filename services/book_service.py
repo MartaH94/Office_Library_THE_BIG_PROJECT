@@ -13,10 +13,8 @@ TO DO HERE:
 - Prepare docstrings.
 - Add and verify permissions <-- Related to authorisation service works.
 
-
+I am here
 """
-
-
 
 from models.book import Book
 import exceptions as exc
@@ -28,19 +26,21 @@ class BookService:
         self.books = []
         self.auth = auth
 
-    def add_book(self, book : Book):
+    def add_book(self, book: Book):
         self.auth.check_permission("add_book")
-        
+
         if not book.author or not book.title:
-           raise exc.InvalidBookDataError('Fields "author" and "title" cannot be empty.')
+            raise exc.InvalidBookDataError(
+                'Fields "author" and "title" cannot be empty.'
+            )
         self.books.append(book)
 
-    def edit_book(self, book : Book, title=None, author=None, year=None): # Method not done yet.
+    def edit_book(
+        self, book: Book, title=None, author=None, year=None
+    ):  # Method not done yet.
         self.auth.check_permission("edit_book")
         if book not in self.books:
             raise exc.BookNotFoundError("Book not found in the library")
-        
-        
 
         if title:
             book.title = title
@@ -49,14 +49,20 @@ class BookService:
         if year:
             book.year = year
 
-    def delete_book(self, book : Book):
+    def delete_book(self, book: Book):
         self.auth.check_permission("delete_book")
         if book not in self.books:
             raise exc.BookNotFoundError("Book not found in the library")
         self.books.remove(book)
 
-
-    def search_books(self, title=None, author=None, year=None, searched_term=None, raise_if_not_found=False):
+    def search_books(
+        self,
+        title=None,
+        author=None,
+        year=None,
+        searched_term=None,
+        raise_if_not_found=False,
+    ):
         self.auth.check_permission("search_book")
 
         title_normalized = None
@@ -77,13 +83,22 @@ class BookService:
                 year_normalized = int(str(year).strip())
             except ValueError:
                 raise exc.BookValidationError("Year must be an 4-digit integer.")
-            
+
             if year_normalized < 1200 or year_normalized > 2050:
-                raise exc.BookValidationError("Year must be a valid 4-digit year with real year value.")
-            
-        if not(title_normalized or author_normalized or searched_term_normalized or year_normalized):
-            raise exc.SearchValueError("At least one search criteria must be provided (title, author, year, or searched_term)")
-        
+                raise exc.BookValidationError(
+                    "Year must be a valid 4-digit year with real year value."
+                )
+
+        if not (
+            title_normalized
+            or author_normalized
+            or searched_term_normalized
+            or year_normalized
+        ):
+            raise exc.SearchValueError(
+                "At least one search criteria must be provided (title, author, year, or searched_term)"
+            )
+
         results = []
 
         for book in self.books:
@@ -99,9 +114,11 @@ class BookService:
                 match = False
 
             if searched_term_normalized:
-                if (searched_term_normalized not in book.title.lower() and
-                    searched_term_normalized not in book.author.lower() and
-                    searched_term_normalized != str(book.year)):
+                if (
+                    searched_term_normalized not in book.title.lower()
+                    and searched_term_normalized not in book.author.lower()
+                    and searched_term_normalized != str(book.year)
+                ):
                     match = False
 
             if match:
@@ -120,8 +137,7 @@ class BookService:
                 books_in_category.append(book)
         return books_in_category
 
-
-    def is_book_available(self, book : Book):
+    def is_book_available(self, book: Book):
         self.auth.check_permission("view_books")
         if book not in self.books:
             raise exc.BookNotFoundError("Book not found in the library")
@@ -135,7 +151,6 @@ class BookService:
                 available_books.append(book)
         return available_books
 
-
     def get_all_books(self):
         self.auth.check_permission("view_books")
         return self.books
@@ -146,18 +161,3 @@ class BookService:
         for book in self.books:
             categories.update(book.categories)
         return list(categories)
-    
-
-   
-
-    
-    
-
-
-    
-
-
-    
-
-
-
