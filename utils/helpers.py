@@ -1,9 +1,17 @@
 # small functions used across the project, eg. generating book IDs, date formatting, etc.
 
 import random
+import exceptions as exc
 
 
+# ID generation functions
 def generate_user_id(users):
+    """This function generates a unique user ID by creating a random 6-digit number and checking it against existing user IDs in the database to ensure uniqueness. It takes a list of existing users as input and returns a unique user ID.
+    Args:
+        users (list): A list of existing user records, where each record is a dictionary containing user information, including the user ID.
+    Returns:
+        int: A unique user ID that does not exist in the provided list of users.
+    """
     while True:
         user_id = random.randint(100000, 999999)
         exists = False
@@ -27,6 +35,37 @@ def generate_loan_id():
 
 def generate_reservation_id():
     pass
+
+
+# Validation functions
+
+
+def validate_email(email: str) -> bool:
+    if not email:
+        raise exc.ValidationError("Please provide your email address.")
+
+    if "@" not in email:
+        raise exc.ValidationError("Please provide a valid email format.")
+
+    email_parts = email.split("@")
+
+    if len(email_parts) != 2:
+        raise exc.ValidationError("Please provide a valid email format.")
+
+    username_part, domain = email_parts
+
+    if not username_part:
+        raise exc.ValidationError(
+            "Please provide a username before '@' in the email address."
+        )
+
+    if not domain:
+        raise exc.ValidationError("Please provide a domain in email address.")
+
+    if "." not in domain or domain.startswith("."):
+        raise exc.ValidationError("Please provide a valid domain value.")
+
+    return True
 
 
 def normalize_username(username):
