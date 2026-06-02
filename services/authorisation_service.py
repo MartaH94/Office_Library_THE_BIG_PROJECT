@@ -186,20 +186,13 @@ user_permissions = {
 
 
 ### I am here
-def user_registration(
-    user_id, email, role, user_name, first_name, last_name, phone_number, password
-):
-    """This function is made for registering new users.
+def user_registration(user_name: str, email: str, password: str):
+    """This function handles user registration.
 
     Args:
-        user_id (int): Unique identifier for the user.
+        user_name (str): Unique username for the user, which will be used for login
         email (str): User's email address.
-        role (str): User's role (e.g., "reader", "admin").
-        user_name (str): User's username.
-        first_name (str): User's first name.
-        last_name (str): User's last name.
-        phone_number (int): User's phone number.
-        password (str): User's password.
+        password (str): User's password, which will be hashed and stored securely.
     """
     pass
 
