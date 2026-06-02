@@ -16,6 +16,8 @@ leveraging a lower-level JSON file service for I/O, validation, and persistence.
 import database.database_schemes as schema
 import exceptions as exc
 from database.json_files_major_services import JsonFilesService
+from models.user import valid_roles
+from database.database_schemes import user_schema
 from utils.config import PROGRAM_USERS_FILE_PATH
 
 
@@ -145,20 +147,37 @@ class UsersJsonFileService:
             )
 
         for user in current_data:
-            if user.get("user_id") == user_id:
-                if field not in user:
+            if user.get("user_id") != user_id:
+                continue
+
+            # supports top-level and nested fields (e.g. "user_profile.user_name")
+            current_user_data = user
+            user_field_path_keys = field.split(".")
+
+            for key in user_field_path_keys[:-1]:
+                if key not in current_user_data or not isinstance(
+                    current_user_data[key], dict
+                ):
                     raise exc.ValidationError(
                         f"The field '{field}' is missing in this user entry."
                     )
+                current_user_data = current_user_data[key]
 
-            user[field] = new_value
+            key_to_update = user_field_path_keys[-1]
 
-            try:
-                self.json_service.validate_against_schema(user, schema.user_schema)
-            except exc.ValidationError as e:
-                raise exc.UserValidationError(
-                    f"Validation failed while updating user data: {e}"
+            if key_to_update not in current_user_data:
+                raise exc.ValidationError(
+                    f"The field '{field}' is missing in this user entry."
                 )
+
+            current_field_value = current_user_data[key_to_update]
+
+            if not isinstance(new_value, type(current_field_value)):
+                raise exc.UserValidationError(
+                    f"The new value for field '{field}' has incorrect data type. Expected type: {type(current_field_value).__name__}."
+                )
+
+            current_user_data[key_to_update] = new_value
 
             user_id_found = True
             break

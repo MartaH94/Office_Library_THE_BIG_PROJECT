@@ -1,36 +1,41 @@
 
-**The Big Library Project** is a Python-based application designed to manage real-life library systems.
-It is a long-term project developed to deepen my skills in Python, software design, and building maintainable, production-oriented applications.
+**The Big Library Project** is a personal Python project created to gain hands‑on experience with object‑oriented programming and modular application design, using a library domain as a practical context.
 
-The project focuses on clean architecture, modular design, and test-driven development principles, with an emphasis on writing readable, scalable, and well-structured code.
-
-The software is developed with real users in mind and follows real-world constraints. It targets users interested in searching for books in local library and loan it. 
+It was started to gain hands‑on experience with object‑oriented programming, modular design, and building software from small, well‑defined components. The project focuses on writing clear, readable code and understanding how different parts of an application work together over time.
 
 
 ### Current status
+The project is currently in an early but well‑structured development stage, with a strong focus on data design and persistence foundations.
 
-* Early-stage development
-* Running in a development environment
-* Core modules designed and structured
+* Database schema designed with required and optional fields
+* JSON‑based persistence module implemented
+* Data validation rebuilt to match updated schemas
+* Core library logic scaffolded but not yet implemented
+* Development currently driven mainly by unit tests
 
 ### Technologies and tools
 
-* Python
-* Unit testing (`unittest`)
+* Python - Core language used to implement the application logic and data handling.
+* `unittest` - Used for writing unit tests, especially for validating persistence and data integrity.
 * Git & GitHub
-* Obsidian (technical documentation and design notes)
+* JSON - File‑based storage format used for persistence during early development.
+* Obsidian - Used for technical documentation, design notes, and tracking architectural decisions.
+* Git & GitHub - Version control and project tracking.
+* GitHub Copilot (AI assistant) - Used as a reasoning and review partner to support learning, validate design decisions, and improve code clarity during development.
 
 ### Key design principles
 
-* Modular architecture
-* Separation of concerns
-* Testable and maintainable code
-* Incremental development
+* Functions and classes with a single, clear responsibility
+* Modular structure 
+* Explicit and readable code
+* Incremental development supported by unit tests
+* OOP used where it improves clarity
 
 ### Planned roadmap
 
-* Full implementation of core features
-* Comprehensive unit test coverage
-* Graphical user interface (GUI)
-* Security and access control mechanisms
+* Finalize and test persistence and validation logic
+* Implement core library functionality (borrowing, availability, users)
+* Add user login and basic data protection
+* Build a GUI
+* Implement a simple AI Agent with book recommendation and library statistics component
 
