@@ -13,8 +13,8 @@ TO DO HERE:
 
 import exceptions as exc
 from models.user import User
-from utils.helpers import generate_user_id
-from database.user_json_file_service import UsersJsonFileService as UserService
+from utils.helpers import generate_user_id, validate_email
+from database.user_json_file_service import UsersJsonFileService
 from utils.security_helpers import (
     hash_password,
     verify_password,
@@ -188,7 +188,9 @@ user_permissions = {
 
 
 ### I am here
-def user_registration(self, user_name: str, email: str, password: str):
+def user_registration(
+    user_service: UsersJsonFileService, user_name: str, email: str, password: str
+):
     """This function handles user registration.
 
     Args:
@@ -196,14 +198,8 @@ def user_registration(self, user_name: str, email: str, password: str):
         email (str): User's email address.
         password (str): User's password, which will be hashed and stored securely.
     """
-    try:
-        all_users = self.UserService.get_all_users_list()
-    except exc.UserNotFoundError:
-        all_users = []
 
-    user_id = generate_user_id(all_users)
-
-    if not user_name:
+    if not user_name or not user_name.strip():
         raise exc.ValidationError("Please provide a username for registration.")
 
     if not email:
@@ -212,13 +208,33 @@ def user_registration(self, user_name: str, email: str, password: str):
     if not password:
         raise exc.ValidationError("Please provide a password for registration.")
 
+    validate_email(email)
+    validate_password_strength(password)
+
+    try:
+        all_users = user_service.get_all_users_list()
+    except exc.UserNotFoundError:
+        all_users = []
+
+    email = email.strip().lower()
+    user_name = user_name.strip().lower()
+
     for user in all_users:
-        if user.get("user_profile", {}).get("user_name") == user_name:
+        stored_username = user.get("user_profile", {}).get("user_name").lower()
+
+        if stored_username == user_name:
             raise exc.UserError(
                 f"Username: {user_name} already exists. Please choose a different username."
             )
 
-    validate_password_strength(password)
+        stored_email = user.get("user_profile", {}).get("email").lower()
+
+        if stored_email == email:
+            raise exc.DataError(
+                f"User with email: {email} is already registered. Please use a different email address."
+            )
+    user_id = generate_user_id(all_users)
+
     password_hash = hash_password(password)
     new_user = User(
         user_id=user_id,
@@ -234,7 +250,7 @@ def user_registration(self, user_name: str, email: str, password: str):
 
     new_user_dict = new_user.__dict__
 
-    self.UserService.add_user_data(new_user_dict)
+    user_service.add_user_data(new_user_dict)
 
     return f"Dear {user_name}! Welcome in Library. Your account has been successfully created with user ID: {user_id}."
 
