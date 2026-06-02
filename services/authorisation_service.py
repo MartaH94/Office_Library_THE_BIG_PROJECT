@@ -13,6 +13,8 @@ TO DO HERE:
 
 import exceptions as exc
 from models.user import User
+from utils.helpers import generate_user_id
+from database.user_json_file_service import UsersJsonFileService as UserService
 from utils.security_helpers import (
     hash_password,
     verify_password,
@@ -186,7 +188,7 @@ user_permissions = {
 
 
 ### I am here
-def user_registration(user_name: str, email: str, password: str):
+def user_registration(self, user_name: str, email: str, password: str):
     """This function handles user registration.
 
     Args:
@@ -194,7 +196,47 @@ def user_registration(user_name: str, email: str, password: str):
         email (str): User's email address.
         password (str): User's password, which will be hashed and stored securely.
     """
-    pass
+    try:
+        all_users = self.UserService.get_all_users_list()
+    except exc.UserNotFoundError:
+        all_users = []
+
+    user_id = generate_user_id(all_users)
+
+    if not user_name:
+        raise exc.ValidationError("Please provide a username for registration.")
+
+    if not email:
+        raise exc.ValidationError("Please provide an email address for registration.")
+
+    if not password:
+        raise exc.ValidationError("Please provide a password for registration.")
+
+    for user in all_users:
+        if user.get("user_profile", {}).get("user_name") == user_name:
+            raise exc.UserError(
+                f"Username: {user_name} already exists. Please choose a different username."
+            )
+
+    validate_password_strength(password)
+    password_hash = hash_password(password)
+    new_user = User(
+        user_id=user_id,
+        role="reader",
+        is_active=True,
+        last_login=None,
+        user_profile={
+            "user_name": user_name,
+            "email": email,
+            "password_hash": password_hash,
+        },
+    )
+
+    new_user_dict = new_user.__dict__
+
+    self.UserService.add_user_data(new_user_dict)
+
+    return f"Dear {user_name}! Welcome in Library. Your account has been successfully created with user ID: {user_id}."
 
 
 def user_login(user_name, password):
