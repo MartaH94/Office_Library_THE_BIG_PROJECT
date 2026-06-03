@@ -1,6 +1,12 @@
 """
-Docstring for services.authorisation_service
-This module handles user authorisation, including login, logout, and permission checks.
+________________________________________________________
+services.authorisation_service
+========================================================
+Service for managing user authorisation.
+________________________________________________________
+
+This module defines the `UserAuthorisation` class for handling user login, logout, and permission checks based on user roles. It also includes functions for user registration and login, which interact with the `UsersJsonFileService` to manage user data stored in a JSON file. The module uses a predefined permissions structure to determine what actions each role is allowed to perform within the library management system.
+
 
 TO DO HERE:
 - Class UserAuthorisation review. Check if it may need more methods.
@@ -188,7 +194,6 @@ user_permissions = {
 }
 
 
-### I am here
 def user_registration(
     user_service: UsersJsonFileService, user_name: str, email: str, password: str
 ):
@@ -320,13 +325,14 @@ def has_permission(role: str, action_path: str) -> bool:
     """
     permissions = user_permissions.get(role, {})
     keys = action_path.split(".")
+
     for key in keys:
         if not isinstance(permissions, dict):
             return False
         permissions = permissions.get(key, None)
         if permissions is None:
             return False
-    return bool(permissions)
+    return permissions is True
 
 
 class UserAuthorisation:
@@ -335,9 +341,8 @@ class UserAuthorisation:
     This class logs user in and out, and checks if the logged-in user has permission to perform specific actions.
     """
 
-    def __init__(self, user):
+    def __init__(self):
         self.logged_in_user = None
-        self.user = user
 
     def login(self, user: User):
         self.logged_in_user = user
@@ -346,11 +351,12 @@ class UserAuthorisation:
         self.logged_in_user = None
 
     def check_permission(self, action):
-        if not self.logged_in_user:
-            raise exc.PermissionError("No logged in user.")
-        if not has_permission(self.logged_in_user.role, action):
+
+        role = self.logged_in_user.role if self.logged_in_user else "guest"
+
+        if not has_permission(role, action):
             raise exc.PermissionError(
-                f"User: {self.logged_in_user.role} cannot perform action '{action}'"
+                f"User with role: {role} cannot perform action '{action}'"
             )
 
         return True
