@@ -365,3 +365,6 @@ class UserAuthorisation:
             )
 
         return True
+
+    def get_current_user(self):
+        return self.logged_in_user
