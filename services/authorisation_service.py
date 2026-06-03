@@ -12,6 +12,7 @@ TO DO HERE:
 """
 
 import exceptions as exc
+from datetime import datetime
 from models.user import User
 from utils.helpers import generate_user_id, validate_email
 from database.user_json_file_service import UsersJsonFileService
@@ -255,8 +256,56 @@ def user_registration(
     return f"Dear {user_name}! Welcome in Library. Your account has been successfully created with user ID: {user_id}."
 
 
-def user_login(user_name, password):
-    pass
+def user_login(user_service: UsersJsonFileService, user_name, password):
+    """This funtion handles user login. It checks if the provided username and password are correct, and if so, it logs the user in and updates their last login date.
+
+    Args:
+        user_name (str): The username provided by the user for login.
+        password (str): The password provided by the user for login.
+
+    Returns:
+        User: The logged-in user object."""
+
+    if not user_name or not user_name.strip():
+        raise exc.UserError("Please provide your username to login.")
+
+    if not password or not password.strip():
+        raise exc.UserError("Please provide your password to login.")
+
+    try:
+        all_users = user_service.get_all_users_list()
+    except exc.UserNotFoundError:
+        raise exc.UserError("No users are registered.")
+
+    user_found = False
+
+    user_name = user_name.strip().lower()
+
+    for user in all_users:
+        stored_username = user.get("user_profile", {}).get("user_name", "").lower()
+        if stored_username == user_name:
+            user_found = True
+            break
+
+    if not user_found:
+        raise exc.UserNotFoundError(f"No user with username '{user_name}' found.")
+
+    stored_hashed_password = user.get("user_profile", {}).get("password_hash")
+
+    verified_password = verify_password(password, stored_hashed_password)
+
+    if not verified_password:
+        raise exc.SecurityError("Provided password is invalid.")
+
+    user_id = user.get("user_id")
+
+    now = datetime.now().date().isoformat()
+
+    user_service.update_user_data(user_id=user_id, field="last_login", new_value=now)
+
+    logged_user = User(**user)
+
+    return logged_user
 
 
 def has_permission(role: str, action_path: str) -> bool:
