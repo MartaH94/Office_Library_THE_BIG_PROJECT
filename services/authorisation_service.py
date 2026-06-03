@@ -8,12 +8,7 @@ ________________________________________________________
 This module defines the `UserAuthorisation` class for handling user login, logout, and permission checks based on user roles. It also includes functions for user registration and login, which interact with the `UsersJsonFileService` to manage user data stored in a JSON file. The module uses a predefined permissions structure to determine what actions each role is allowed to perform within the library management system.
 
 
-TO DO HERE:
-- Class UserAuthorisation review. Check if it may need more methods.
-- Function has_permission review. Check if it covers all needed cases.
-- Make sure that nested permissions are handled correctly.
-- Split permissions for books, loans, user account actions.
-- build functions to register and to login users.
+
 
 """
 
@@ -36,6 +31,7 @@ user_permissions = {
             "borrow_book": True,
             "return_book": True,
             "reserve_book": True,
+            "cancel_reservation": True,
             "add_book": False,
             "edit_book": False,
             "delete_book": False,
@@ -50,6 +46,7 @@ user_permissions = {
         },
         "actions": {
             "approve_reservations": False,
+            "view_reservations": False,
             "manage_users": False,
             "view_logs": False,
             "generate_reports": False,
@@ -68,6 +65,7 @@ user_permissions = {
             "borrow_book": False,
             "return_book": False,
             "reserve_book": True,
+            "cancel_reservation": True,
             "add_book": True,
             "edit_book": True,
             "delete_book": True,
@@ -82,6 +80,7 @@ user_permissions = {
         },
         "actions": {
             "approve_reservations": False,
+            "view_reservations": True,
             "manage_users": True,
             "view_logs": True,
             "generate_reports": True,
@@ -100,6 +99,7 @@ user_permissions = {
             "borrow_book": False,
             "return_book": False,
             "reserve_book": True,
+            "cancel_reservation": True,
             "add_book": True,
             "edit_book": True,
             "delete_book": True,
@@ -114,6 +114,7 @@ user_permissions = {
         },
         "actions": {
             "approve_reservations": True,
+            "view_reservations": True,
             "manage_users": False,
             "view_logs": False,
             "generate_reports": True,
@@ -132,6 +133,7 @@ user_permissions = {
             "borrow_book": False,
             "return_book": False,
             "reserve_book": True,
+            "cancel_reservation": True,
             "add_book": False,
             "edit_book": False,
             "delete_book": False,
@@ -146,6 +148,7 @@ user_permissions = {
         },
         "actions": {
             "approve_reservations": False,
+            "view_reservations": False,
             "manage_users": False,
             "view_logs": False,
             "generate_reports": False,
@@ -164,6 +167,7 @@ user_permissions = {
             "borrow_book": False,
             "return_book": False,
             "reserve_book": False,
+            "cancel_reservation": True,
             "add_book": True,
             "edit_book": True,
             "delete_book": False,
@@ -178,6 +182,7 @@ user_permissions = {
         },
         "actions": {
             "approve_reservations": False,
+            "view_reservations": True,
             "manage_users": False,
             "view_logs": True,
             "generate_reports": True,
@@ -185,11 +190,11 @@ user_permissions = {
             "delete_data": False,
             "edit_data": True,
         },
-    },
-    "sensitive_users_data": {
-        "view_data": True,
-        "edit_data": False,
-        "delete_data": True,
+        "sensitive_users_data": {
+            "view_data": True,
+            "edit_data": False,
+            "delete_data": False,
+        },
     },
 }
 
