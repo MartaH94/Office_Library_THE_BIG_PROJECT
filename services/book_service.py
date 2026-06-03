@@ -13,7 +13,22 @@ TO DO HERE:
 - Prepare docstrings.
 - Add and verify permissions <-- Related to authorisation service works.
 
-I am here
+
+Core:
+- dodawanie książki
+- edycja danych książki
+- usuwanie książki
+- pobieranie listy książek
+
+Wyszukiwanie i filtrowanie:
+- wyszukiwanie po tytule / autorze / kategorii
+- filtrowanie książek (np. dostępne)
+- sortowanie (np. alfabetycznie, data dodania)
+
+Stan książki:
+- sprawdzanie czy książka istnieje
+- sprawdzanie czy książka jest aktywna (np. nieusunięta)
+
 """
 
 from models.book import Book
