@@ -1,5 +1,14 @@
 """
-Docstring for services.user_service
+________________________________________________________________________
+services.user_service.py
+========================================================================
+Managing users operations e.g.: add, edit, search, sort, delete, display
+________________________________________________________________________
+
+
+
+
+
 
 Managing user services: create user, manage user type (librarian, reader, admin, moderator), create unique user id, put more ideas here :)
 
@@ -29,10 +38,14 @@ wyszukiwanie usera po:
 - email
 - id
 
+NOW BUILD SERVICES
 
+1. UserService
+2. BookService
+3. LoanService
 
 """
 
 
-class LoanService:
+class UserService:
     pass

@@ -29,6 +29,13 @@ Stan książki:
 - sprawdzanie czy książka istnieje
 - sprawdzanie czy książka jest aktywna (np. nieusunięta)
 
+
+NOW BUILD SERVICES
+
+1. UserService
+2. BookService
+3. LoanService
+
 """
 
 from models.book import Book
