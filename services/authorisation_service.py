@@ -8,13 +8,15 @@ ________________________________________________________
 This module defines the `UserAuthorisation` class for handling user login, logout, and permission checks based on user roles. It also includes functions for user registration and login, which interact with the `UsersJsonFileService` to manage user data stored in a JSON file. The module uses a predefined permissions structure to determine what actions each role is allowed to perform within the library management system.
 
 
-
+!!! Update and verification of registration and logging functios
+ as the users, books and loans services are growing !!!
 
 """
 
 import exceptions as exc
 from datetime import datetime
 from models.user import User
+from services.user_service import UserService
 from utils.helpers import generate_user_id, validate_email
 from database.user_json_file_service import UsersJsonFileService
 from utils.security_helpers import (
@@ -200,7 +202,10 @@ user_permissions = {
 
 
 def user_registration(
-    user_service: UsersJsonFileService, user_name: str, email: str, password: str
+    user_service: UserService,
+    user_name: str,
+    email: str,
+    password: str,
 ):
     """This function handles user registration.
 
@@ -223,7 +228,7 @@ def user_registration(
     validate_password_strength(password)
 
     try:
-        all_users = user_service.get_all_users_list()
+        all_users = user_service.show_all_users()
     except exc.UserNotFoundError:
         all_users = []
 
@@ -259,9 +264,7 @@ def user_registration(
         },
     )
 
-    new_user_dict = new_user.__dict__
-
-    user_service.add_user_data(new_user_dict)
+    user_service.add_user(new_user)
 
     return f"Dear {user_name}! Welcome in Library. Your account has been successfully created with user ID: {user_id}."
 
