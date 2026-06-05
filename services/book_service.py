@@ -7,6 +7,15 @@ services.book_service.py
 Managing book operations e.g.: add, edit, search, sort, delete, display
 ________________________________________________________________________
 
+file status: on hold
+
+
+NOW BUILDING SERVICES IN FOLLOWING ORDER:
+
+1. UserService
+2. BookService
+3. LoanService
+
 
 TO DO HERE:
 - Check if all methods are implemented
@@ -30,11 +39,6 @@ Stan książki:
 - sprawdzanie czy książka jest aktywna (np. nieusunięta)
 
 
-NOW BUILD SERVICES
-
-1. UserService
-2. BookService
-3. LoanService
 
 """
 

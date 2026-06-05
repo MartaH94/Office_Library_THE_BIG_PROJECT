@@ -1,6 +1,18 @@
 # managing loan operations like: borrow, return, view loans, check book availability
 
 """
+
+
+file status: on hold
+
+
+NOW BUILDING SERVICES IN FOLLOWING ORDER:
+
+1. UserService
+2. BookService
+3. LoanService
+
+
 Wypożyczenia:
 - wypożycz książkę
 - zwróć książkę
