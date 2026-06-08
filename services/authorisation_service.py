@@ -228,7 +228,7 @@ def user_registration(
     validate_password_strength(password)
 
     try:
-        all_users = user_service.show_all_users()
+        all_users = user_service.get_all_users()
     except exc.UserNotFoundError:
         all_users = []
 

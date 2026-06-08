@@ -57,5 +57,23 @@ class UserService:
         user_dict = user.__dict__
         self.users_json_service.add_user_data(user_dict)
 
-    def show_all_users(self):
+    def get_all_users(self):
         return self.users_json_service.get_all_users_list()
+
+    def get_user_by_id(self, user_id):
+
+        if user_id is None:
+            raise exc.UserError("Please provide user ID to retrieve user data.")
+
+        if not isinstance(user_id, int):
+            raise exc.UserError(
+                "Please provide correct type of user ID to retrieve user data."
+            )
+
+        all_users = self.get_all_users()
+
+        for user in all_users:
+            if user_id == user.get("user_id"):
+                return User(**user)
+
+        raise exc.UserNotFoundError(f"User with ID: {user_id} not found in database.")
