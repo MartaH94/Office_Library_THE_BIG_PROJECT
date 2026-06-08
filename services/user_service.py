@@ -66,7 +66,7 @@ class UserService:
             raise exc.UserError("Please provide user ID to retrieve user data.")
 
         if not isinstance(user_id, int):
-            raise exc.UserError(
+            raise exc.DataTypeError(
                 "Please provide correct type of user ID to retrieve user data."
             )
 
@@ -77,3 +77,26 @@ class UserService:
                 return User(**user)
 
         raise exc.UserNotFoundError(f"User with ID: {user_id} not found in database.")
+
+    def get_user_by_username(self, user_name):
+
+        if not user_name or not user_name.strip():
+            raise exc.UserError("Please provide user name to retrieve data.")
+
+        if not isinstance(user_name, str):
+            raise exc.DataTypeError(
+                "Please provide correct type of user name to retrieve data."
+            )
+
+        all_users = self.get_all_users()
+
+        user_name = user_name.strip().lower()
+
+        for user in all_users:
+            stored_user_name = user.get("user_profile", {}).get("user_name").lower()
+            if user_name == stored_user_name:
+                return User(**user)
+
+        raise exc.UserNotFoundError(
+            f"User with name: {user_name} not found in database."
+        )
