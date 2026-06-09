@@ -45,6 +45,8 @@ get_user_profile(user_id)
 """
 
 import exceptions as exc
+
+from datetime import datetime
 from models.user import User
 from models.user import valid_roles
 from database.user_json_file_service import UsersJsonFileService
@@ -199,11 +201,24 @@ class UserService:
             user_id=user_id, field="role", new_value=new_role
         )
 
-    def update_user_status(self, user_id, is_active):
-        pass
+    def update_user_status(self, user_id, new_status):
+        self.ensure_user_exists(user_id)
+
+        if not isinstance(new_status, bool):
+            raise exc.DataTypeError("The field 'is_active' must be a bool value.")
+
+        self.users_json_service.update_user_data(
+            user_id=user_id, field="is_active", new_value=new_status
+        )
 
     def update_last_login_date(self, user_id):
-        pass
+        self.ensure_user_exists(user_id)
+
+        now = datetime.now().date().isoformat()
+
+        self.users_json_service.update_user_data(
+            user_id=user_id, field="last_login", new_value=now
+        )
 
 
 # update_user_data(user_id, field, value)
