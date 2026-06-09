@@ -7,7 +7,6 @@ ________________________________________________________________________
 
 file status: in progress
 
-
 NOW BUILDING SERVICES IN FOLLOWING ORDER:
 
 1. UserService
@@ -15,24 +14,7 @@ NOW BUILDING SERVICES IN FOLLOWING ORDER:
 3. LoanService
 
 
-
 METHODS TO IMPLEMENT IN CLASS UserService:
-
-# SEARCH / RETRIEVE:
-get_user_by_username(user_name: str)
-get_user_by_email(email: str)
-get_user_by_id(user_id: int)
-
-# EXISTENCE CHECKS:
-user_exists_by_username(user_name: str) -> bool
-user_exists_by_email(email: str) -> bool
-ensure_user_exists(user_id: int)
-
-# CORE UPDATE:
-update_user_data(user_id, field, value)
-update_user_role(user_id, role)
-update_user_status(user_id, is_active)
-update_last_login(user_id)
 
 # DELETE:
 delete_user(user_id)
@@ -73,6 +55,8 @@ class UserService:
 
         user_dict = user.__dict__
         self.users_json_service.add_user_data(user_dict)
+
+    ### SEARCH / RETRIEVE USER:
 
     def get_all_users(self):
         """This method retrieves all user records from the JSON file storage using the UsersJsonFileService. It returns a list of user dictionaries representing all users in the system."""
@@ -155,6 +139,11 @@ class UserService:
     ### USER EXISTENCE CHECKS:
 
     def user_exists_by_username(self, user_name):
+        """This method checks if a user exists in the system based on their username. It takes a string user_name as input and returns a boolean value indicating whether a user with the specified username exists in the database. The method uses the get_user_by_username method to attempt to retrieve the user, and if a UserNotFoundError is raised, it returns False; otherwise, it returns True.
+
+        Args:
+            user_name (str): The username to check for existence in the system."""
+
         try:
             self.get_user_by_username(user_name)
             return True
@@ -162,6 +151,11 @@ class UserService:
             return False
 
     def user_exists_by_email(self, email):
+        """This method checks if a user exists in the system based on their email address. It takes a string email as input and returns a boolean value indicating whether a user with the specified email exists in the database. The method uses the get_user_by_email method to attempt to retrieve the user, and if a UserNotFoundError is raised, it returns False; otherwise, it returns True.
+
+        Args:
+            email (str): The email address to check for existence in the system."""
+
         try:
             self.get_user_by_email(email)
             return True
@@ -169,18 +163,21 @@ class UserService:
             return False
 
     def ensure_user_exists(self, user_id):
+        """This method ensures that a user with the specified user ID exists in the system. It takes an integer user_id as input and attempts to retrieve the user using the get_user_by_id method. If the user is found, it returns the User object; if no user with the specified ID exists, it raises a UserNotFoundError."""
         self.get_user_by_id(user_id)
 
-    ### CORE UPDATE:
+    ### USER DATA UPDATES:
 
     def update_user_data(self, user_id, field, new_value):
-        self.ensure_user_exists(user_id)
+        """This method updates a specific field of a user's data based on their user ID. It takes an integer user_id, a string field representing the field to be updated, and the new value to be set for that field. The method first ensures that the user exists using the ensure_user_exists method, then validates the input parameters, and finally uses the UsersJsonFileService to perform the update in the JSON file storage. If the update is successful, it returns the updated user data."""
 
-        if not field or not field.strip():
-            raise exc.ValidationError("Selected field to update is an empty value.")
+        self.ensure_user_exists(user_id)
 
         if not isinstance(field, str):
             raise exc.DataTypeError("Field name must be a string value type.")
+
+        if not field or not field.strip():
+            raise exc.ValidationError("Selected field to update is an empty value.")
 
         if new_value is None:
             raise exc.ValidationError("New value to update cannot be an empty value.")
@@ -192,36 +189,58 @@ class UserService:
         return updated_user_data
 
     def update_user_role(self, user_id, new_role):
+        """This method updates the role of a user based on their user ID. It takes an integer user_id and a string new_role as input. The method first ensures that the user exists using the ensure_user_exists method, then validates that the new_role is one of the valid roles defined in the system. If the new_role is valid, it uses the UsersJsonFileService to update the user's role in the JSON file storage. If the update is successful, it returns the updated user data."""
+
         self.ensure_user_exists(user_id)
 
         if new_role not in valid_roles:
             raise exc.UserValidationError(f"{new_role}: The role is not available.")
 
-        self.users_json_service.update_user_data(
+        user_data_with_updated_role = self.users_json_service.update_user_data(
             user_id=user_id, field="role", new_value=new_role
         )
 
+        return user_data_with_updated_role
+
     def update_user_status(self, user_id, new_status):
+        """This method updates the active status of a user based on their user ID. It takes an integer user_id and a boolean new_status as input. The method first ensures that the user exists using the ensure_user_exists method, then validates that the new_status is a boolean value. If the new_status is valid, it uses the UsersJsonFileService to update the user's active status in the JSON file storage. If the update is successful, it returns the updated user data."""
+
         self.ensure_user_exists(user_id)
 
         if not isinstance(new_status, bool):
             raise exc.DataTypeError("The field 'is_active' must be a bool value.")
 
-        self.users_json_service.update_user_data(
+        user_data_with_updated_status = self.users_json_service.update_user_data(
             user_id=user_id, field="is_active", new_value=new_status
         )
 
+        return user_data_with_updated_status
+
     def update_last_login_date(self, user_id):
+        """This method updates the last login date of a user based on their user ID. It takes an integer user_id as input. The method first ensures that the user exists using the ensure_user_exists method, then gets the current date and formats it as an ISO string. It uses the UsersJsonFileService to update the user's last login date in the JSON file storage. If the update is successful, it returns the updated user data."""
+
         self.ensure_user_exists(user_id)
 
         now = datetime.now().date().isoformat()
 
-        self.users_json_service.update_user_data(
+        user_data_with_updated_login_date = self.users_json_service.update_user_data(
             user_id=user_id, field="last_login", new_value=now
         )
 
+        return user_data_with_updated_login_date
 
-# update_user_data(user_id, field, value)
-# update_user_role(user_id, role)
-# update_user_status(user_id, is_active)
-# update_last_login(user_id)
+    ### UTILS:
+
+    def delete_user(self, user_id):
+        pass
+
+    ### HELPERS:
+
+    def get_user_role(self, user_id):
+        pass
+
+    def is_user_active(self, user_id):
+        pass
+
+    def get_user_profile(self, user_id):
+        pass
