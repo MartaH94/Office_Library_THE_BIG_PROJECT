@@ -26,7 +26,7 @@ get_user_by_id(user_id: int)
 # EXISTENCE CHECKS:
 user_exists_by_username(user_name: str) -> bool
 user_exists_by_email(email: str) -> bool
-validate_user_exists(user_id: int)
+ensure_user_exists(user_id: int)
 
 # CORE UPDATE:
 update_user_data(user_id, field, value)
@@ -148,3 +148,30 @@ class UserService:
                 return User(**user)
 
         raise exc.UserNotFoundError(f"User with email: {email} not found in database.")
+
+    ### USER EXISTENCE CHECKS:
+
+    def user_exists_by_username(self, user_name):
+        try:
+            self.get_user_by_username(user_name)
+            return True
+        except exc.UserNotFoundError:
+            return False
+
+    def user_exists_by_email(self, email):
+        try:
+            self.get_user_by_email(email)
+            return True
+        except exc.UserNotFoundError:
+            return False
+
+    def ensure_user_exists(self, user_id):
+        self.get_user_by_id(user_id)
+
+    ### CORE UPDATE:
+
+
+# update_user_data(user_id, field, value)
+# update_user_role(user_id, role)
+# update_user_status(user_id, is_active)
+# update_last_login(user_id)
