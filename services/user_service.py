@@ -46,6 +46,7 @@ get_user_profile(user_id)
 
 import exceptions as exc
 from models.user import User
+from models.user import valid_roles
 from database.user_json_file_service import UsersJsonFileService
 from utils.helpers import validate_email
 
@@ -188,8 +189,15 @@ class UserService:
 
         return updated_user_data
 
-    def update_user_role(self, user_id, role):
-        pass
+    def update_user_role(self, user_id, new_role):
+        self.ensure_user_exists(user_id)
+
+        if new_role not in valid_roles:
+            raise exc.UserValidationError(f"{new_role}: The role is not available.")
+
+        self.users_json_service.update_user_data(
+            user_id=user_id, field="role", new_value=new_role
+        )
 
     def update_user_status(self, user_id, is_active):
         pass
