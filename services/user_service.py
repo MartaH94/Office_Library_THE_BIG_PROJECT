@@ -170,6 +170,33 @@ class UserService:
 
     ### CORE UPDATE:
 
+    def update_user_data(self, user_id, field, new_value):
+        self.ensure_user_exists(user_id)
+
+        if not field or not field.strip():
+            raise exc.ValidationError("Selected field to update is an empty value.")
+
+        if not isinstance(field, str):
+            raise exc.DataTypeError("Field name must be a string value type.")
+
+        if new_value is None:
+            raise exc.ValidationError("New value to update cannot be an empty value.")
+
+        updated_user_data = self.users_json_service.update_user_data(
+            user_id=user_id, field=field, new_value=new_value
+        )
+
+        return updated_user_data
+
+    def update_user_role(self, user_id, role):
+        pass
+
+    def update_user_status(self, user_id, is_active):
+        pass
+
+    def update_last_login_date(self, user_id):
+        pass
+
 
 # update_user_data(user_id, field, value)
 # update_user_role(user_id, role)
