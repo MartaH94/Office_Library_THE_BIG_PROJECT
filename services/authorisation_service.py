@@ -13,16 +13,17 @@ This module defines the `UserAuthorisation` class for handling user login, logou
 
 """
 
-import exceptions as exc
 from datetime import datetime
+
+import exceptions as exc
+from database.user_json_file_service import UsersJsonFileService
 from models.user import User
 from services.user_service import UserService
 from utils.helpers import generate_user_id, validate_email
-from database.user_json_file_service import UsersJsonFileService
 from utils.security_helpers import (
     hash_password,
-    verify_password,
     validate_password_strength,
+    verify_password,
 )
 
 # managing registration, login, permissions and authorisation of users

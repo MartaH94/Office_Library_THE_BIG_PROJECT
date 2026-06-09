@@ -26,12 +26,11 @@ get_user_profile(user_id)
 
 """
 
-import exceptions as exc
-
 from datetime import datetime
-from models.user import User
-from models.user import valid_roles
+
+import exceptions as exc
 from database.user_json_file_service import UsersJsonFileService
+from models.user import User, valid_roles
 from utils.helpers import validate_email
 
 
