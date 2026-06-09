@@ -2,27 +2,13 @@
 ________________________________________________________________________
 services.user_service.py
 ========================================================================
-Managing users operations e.g.: add, edit, search, sort, delete, display
+Managing users operations
 ________________________________________________________________________
 
-file status: in progress
-
-NOW BUILDING SERVICES IN FOLLOWING ORDER:
-
-1. UserService
-2. BookService
-3. LoanService
+This module defines the UserService class, which provides methods for managing user-related operations in the library management system. The UserService interacts with the UsersJsonFileService to perform CRUD operations on user data stored in a JSON file. It includes methods for adding users, retrieving users by various criteria, updating user information, and validating user existence. The service ensures that user data is handled correctly and that appropriate exceptions are raised for invalid operations or data.
 
 
-METHODS TO IMPLEMENT IN CLASS UserService:
-
-# DELETE:
-delete_user(user_id)
-
-# HELPERS:
-get_user_role(user_id)
-is_user_active(user_id)
-get_user_profile(user_id)
+file status: done
 
 """
 
@@ -68,13 +54,13 @@ class UserService:
         Args:
             user_id (int): The unique identifier of the user to be retrieved."""
 
-        if user_id is None:
-            raise exc.DataError("Please provide user ID to retrieve user data.")
-
         if not isinstance(user_id, int):
             raise exc.DataTypeError(
                 "Please provide correct type of user ID to retrieve user data."
             )
+
+        if user_id is None:
+            raise exc.DataError("Please provide user ID to retrieve user data.")
 
         all_users = self.get_all_users()
 
@@ -90,20 +76,20 @@ class UserService:
         Args:
             user_name (str): The username of the user to be retrieved."""
 
-        if not user_name or not user_name.strip():
-            raise exc.DataError("Please provide user name to retrieve data.")
-
         if not isinstance(user_name, str):
             raise exc.DataTypeError(
                 "Please provide correct type of user name to retrieve data."
             )
+
+        if not user_name or not user_name.strip():
+            raise exc.DataError("Please provide user name to retrieve data.")
 
         all_users = self.get_all_users()
 
         user_name = user_name.strip().lower()
 
         for user in all_users:
-            stored_user_name = user.get("user_profile", {}).get("user_name").lower()
+            stored_user_name = user.get("user_profile", {}).get("user_name", "").lower()
             if user_name == stored_user_name:
                 return User(**user)
 
@@ -163,6 +149,7 @@ class UserService:
 
     def ensure_user_exists(self, user_id):
         """This method ensures that a user with the specified user ID exists in the system. It takes an integer user_id as input and attempts to retrieve the user using the get_user_by_id method. If the user is found, it returns the User object; if no user with the specified ID exists, it raises a UserNotFoundError."""
+
         self.get_user_by_id(user_id)
 
     ### USER DATA UPDATES:
@@ -231,15 +218,31 @@ class UserService:
     ### UTILS:
 
     def delete_user(self, user_id):
-        pass
+        """This method deletes a user from the system based on their user ID. It takes an integer user_id as input, ensures that the user exists using the ensure_user_exists method, and then uses the UsersJsonFileService to delete the user data from the JSON file storage. If the deletion is successful, it returns a confirmation message or the deleted user data."""
+
+        self.ensure_user_exists(user_id)
+
+        return self.users_json_service.delete_user_by_id(user_id)
 
     ### HELPERS:
 
     def get_user_role(self, user_id):
-        pass
+        """This method retrieves the role of a user based on their user ID. It takes an integer user_id as input, ensures that the user exists using the ensure_user_exists method, and then retrieves the user's data to return the role associated with that user."""
+
+        user = self.get_user_by_id(user_id)
+
+        return user.role
 
     def is_user_active(self, user_id):
-        pass
+        """This method checks if a user is active based on their user ID. It takes an integer user_id as input, ensures that the user exists using the ensure_user_exists method, and then retrieves the user's data to return the active status (is_active) associated with that user."""
+
+        user = self.get_user_by_id(user_id)
+
+        return user.is_active
 
     def get_user_profile(self, user_id):
-        pass
+        """This method retrieves the user profile information of a user based on their user ID. It takes an integer user_id as input, ensures that the user exists using the ensure_user_exists method, and then retrieves the user's data to return the user_profile dictionary associated with that user."""
+
+        user = self.get_user_by_id(user_id)
+
+        return user.user_profile
