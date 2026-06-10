@@ -18,55 +18,59 @@ ________________________________________________________
 CHECKLIST - METHODS TO IMPLEMENT
 ========================================================
 
-[CORE - CREATE / DELETE]
+[CORE]
 --------------------------------------------------------
-- add_book(book: Book)
-- delete_book(book_id)
+1. add_book(book: Book)
+2. get_all_books()
 
 --------------------------------------------------------
 
 [SEARCH / RETRIEVE]
 --------------------------------------------------------
-- get_all_books()
-- get_book_by_id(book_id)
+
+3.  get_book_by_id(book_id)
 - get_books_by_title(title)
 - get_books_by_keyword(keyword)
 - get_books_by_year(year)
-- get_books_by_category(category)
+7. get_books_by_category(category)
 
 --------------------------------------------------------
 
 [EXISTENCE CHECKS]
 --------------------------------------------------------
-- book_exists_by_id(book_id) -> bool
+8.  book_exists_by_id(book_id) -> bool
 - book_exists_by_title(title) -> bool
-- ensure_book_exists(book_id)
+10. ensure_book_exists(book_id)
 
 --------------------------------------------------------
 
 [AVAILABILITY]
 --------------------------------------------------------
-- is_book_available(book_id) -> bool
-- get_available_books()
-- get_unavailable_books()
+11. is_book_available(book_id) -> bool
+12. get_available_books()
+13. get_unavailable_books()
 
 --------------------------------------------------------
 
 [UPDATE – GENERIC]
 --------------------------------------------------------
-- update_book_data(book_id, field, new_value)
+
 
 --------------------------------------------------------
 
 [UPDATE – DOMAIN SPECIFIC]
 --------------------------------------------------------
+14. update_book_data(book_id, field, new_value)
 - update_book_title(book_id, new_title)
 - update_book_author(book_id, new_author)
 - update_book_year(book_id, new_year)
 - update_book_category(book_id, new_category)
-- update_book_quantity(book_id, new_quantity)
+19. update_book_quantity(book_id, new_quantity)
 
 --------------------------------------------------------
+[DELETE]
+--------------------------------------------------------
+20. - delete_book(book_id)
 
 [FILTERING / LISTING]
 --------------------------------------------------------
@@ -116,3 +120,12 @@ from models.book import Book
 class BookService:
     def __init__(self, book_json_service: BookJsonFileService):
         self.book_json_service = book_json_service
+
+    ### CORE
+
+    def add_new_book(self, book: Book):
+        book_dict = book.__dict__
+        self.book_json_service.add_book_data(book_dict)
+
+    def get_all_books(self):
+        return self.book_json_service.get_all_books_list()
