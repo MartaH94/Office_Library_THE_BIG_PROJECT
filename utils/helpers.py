@@ -1,6 +1,7 @@
 # small functions used across the project, eg. generating book IDs, date formatting, etc.
 
 import random
+
 import exceptions as exc
 
 
@@ -25,8 +26,17 @@ def generate_user_id(users):
             return user_id
 
 
-def generate_book_id():
-    pass
+def generate_book_id(books):
+    while True:
+        book_id = random.randint(1000000, 9999999)
+        exists = False
+
+        for book in books:
+            if book["book_id"] == book_id:
+                exists = True
+                break
+        if not exists:
+            return book_id
 
 
 def generate_loan_id():

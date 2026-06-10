@@ -115,6 +115,7 @@ ________________________________________________________
 import exceptions as exc
 from database.book_json_file_service import BookJsonFileService
 from models.book import Book
+from utils.helpers import generate_book_id
 
 
 class BookService:
@@ -123,9 +124,17 @@ class BookService:
 
     ### CORE
 
-    def add_new_book(self, book: Book):
-        book_dict = book.__dict__
-        self.book_json_service.add_book_data(book_dict)
-
     def get_all_books(self):
         return self.book_json_service.get_all_books_list()
+
+    def add_book(self, book: Book):
+        """
+        Add validation of: type book (if it is a correct book object), title, author, year
+        """
+
+        all_books = self.get_all_books()
+        book_id = generate_book_id(all_books)
+        book_dict = book.__dict__
+        book_dict["book_id"] = book_id
+
+        return self.book_json_service.add_book_data(book_dict)
