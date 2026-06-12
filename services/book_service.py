@@ -132,9 +132,63 @@ class BookService:
         Add validation of: type book (if it is a correct book object), title, author, year
         """
 
-        all_books = self.get_all_books()
-        book_id = generate_book_id(all_books)
-        book_dict = book.__dict__
-        book_dict["book_id"] = book_id
+        if not isinstance(book, Book):
+            raise exc.DataTypeError("Please provide book as a book object")
 
-        return self.book_json_service.add_book_data(book_dict)
+        if not book.title or not book.title.strip():
+            raise exc.BookValidationError("Please provide book title.")
+
+        if not book.author or not book.author.strip():
+            raise exc.BookValidationError("Please provide book author.")
+
+        if book.publication_year is None:
+            if not isinstance(book.publication_year, int):
+                raise exc.BookValidationError("Year must be an integer.")
+
+            if book.publication_year < 1200 or book.publication_year > 2050:
+                raise exc.BookValidationError("Year must be a valid year.")
+
+        all_books = self.get_all_books()
+
+        book_id = generate_book_id(all_books)
+
+        book.book_id = book_id
+
+        return self.book_json_service.add_book_data(book.to_dict())
+
+    # 3.  get_book_by_id(book_id)
+    # - get_books_by_title(title)
+    # - get_books_by_keyword(keyword)
+    # - get_books_by_year(year)
+    # 7. get_books_by_category(category)
+
+    ### SEARCH / RETRIEVE
+
+    def get_book_by_id(self, book_id):
+        if not isinstance(book_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of book ID to retrieve book data."
+            )
+
+        if book_id is None:
+            raise exc.DataError("Please provide book ID to retrieve book data.")
+
+        all_books = self.get_all_books()
+
+        for book in all_books:
+            if book_id == book.get("book_id"):
+                return Book(**book)
+
+        raise exc.BookNotFoundError(f"Book with ID: {book_id} not found in database.")
+
+    def get_books_by_title(self):
+        pass
+
+    def get_books_by_keyword(self):
+        pass
+
+    def get_books_by_year(self):
+        pass
+
+    def get_books_by_category(self):
+        pass
