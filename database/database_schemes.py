@@ -49,8 +49,9 @@ book_schema = {
             type(None),
         ),  # borrower_id can be an integer (user_id) or None if the book is not currently loaned out
         "due_date": "date",  # stored as string
+        "last_loan_date": "date",
     },
-    "required": ["book_id", "title", "publication_year"],
+    "required": ["book_id", "title", "author", "publication_year"],
 }
 
 
