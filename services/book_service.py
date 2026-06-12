@@ -131,7 +131,22 @@ class BookService:
         return self.book_json_service.add_book_data(book.to_dict())
 
     def update_book_data(self, book_id, field, new_value):
-        pass
+        self.ensure_book_exists(book_id)
+
+        if not isinstance(field, str):
+            raise exc.DataTypeError("Field name must be a string value type.")
+
+        if not field or not field.strip():
+            raise exc.ValidationError("Selected field to update is an empty value.")
+
+        if new_value is None:
+            raise exc.ValidationError("New value to update cannot be an empty value.")
+
+        updated_book_data = self.book_json_service.update_book_data(
+            book_id=book_id, field=field, new_value=new_value
+        )
+
+        return updated_book_data
 
     def delete_book(self, book_id):
         pass
