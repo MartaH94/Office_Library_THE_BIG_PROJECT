@@ -15,101 +15,42 @@ or user interactions. These responsibilities belong to LoanService.
 file status: in progress
 ________________________________________________________
 
-CHECKLIST - METHODS TO IMPLEMENT
+
+CHECKLIST – METHODS TO IMPLEMENT
 ========================================================
 
-[CORE]
+[CORE – CRUD]
 --------------------------------------------------------
-1. add_book(book: Book)
-2. get_all_books()
-
---------------------------------------------------------
-
-[SEARCH / RETRIEVE]
---------------------------------------------------------
-
-3.  get_book_by_id(book_id)
-- get_books_by_title(title)
-- get_books_by_keyword(keyword)
-- get_books_by_year(year)
-7. get_books_by_category(category)
+- add_book(book: Book) - done
+- get_all_books() - done
+- get_book_by_id(book_id) - done
+- update_book_data(book_id, field, new_value)
+- delete_book(book_id)
 
 --------------------------------------------------------
 
 [EXISTENCE CHECKS]
 --------------------------------------------------------
-8.  book_exists_by_id(book_id) -> bool
-- book_exists_by_title(title) -> bool
-10. ensure_book_exists(book_id)
+- book_exists_by_id(book_id) -> bool
+- ensure_book_exists(book_id)
+
+--------------------------------------------------------
+
+[SEARCH]
+--------------------------------------------------------
+- get_books_by_keyword(keyword)
+    → main search method (title, author, category, etc.)
+
+- get_books_by_year(year)
+    → separate because year is exact-match data
 
 --------------------------------------------------------
 
 [AVAILABILITY]
 --------------------------------------------------------
-11. is_book_available(book_id) -> bool
-12. get_available_books()
-13. get_unavailable_books()
+- is_book_available(book_id) -> bool
+- get_available_books()
 
---------------------------------------------------------
-
-[UPDATE – GENERIC]
---------------------------------------------------------
-
-
---------------------------------------------------------
-
-[UPDATE – DOMAIN SPECIFIC]
---------------------------------------------------------
-14. update_book_data(book_id, field, new_value)
-- update_book_title(book_id, new_title)
-- update_book_author(book_id, new_author)
-- update_book_year(book_id, new_year)
-- update_book_category(book_id, new_category)
-19. update_book_quantity(book_id, new_quantity)
-
---------------------------------------------------------
-[DELETE]
---------------------------------------------------------
-20. - delete_book(book_id)
-
-[FILTERING / LISTING]
---------------------------------------------------------
-- get_books_by_author(author)
-- get_books_by_category(category)
-
---------------------------------------------------------
-
-[HELPERS]
---------------------------------------------------------
-- get_book_title(book_id)
-- get_book_author(book_id)
-- get_book_category(book_id)
-- get_book_year(book_id)
-
---------------------------------------------------------
-
-IMPORTANT DESIGN RULES
-========================================================
-
-- BookService handles ONLY book data.
-- BookService does NOT:
-    * borrow books
-    * return books
-    * manage reservations
-    * assign books to users
-
-→ These responsibilities belong to LoanService.
-
-- Authorisation (permissions) is NOT handled here.
-→ It must be checked BEFORE calling BookService methods.
-
-- Following the same structure and patterns as UserService:
-    * get_* → returns data or raises exception
-    * exists_* → returns True / False
-    * ensure_* → raises exception
-    * update_* → validates and delegates to storage layer
-
-________________________________________________________
 """
 
 import exceptions as exc
@@ -156,8 +97,6 @@ class BookService:
 
         return self.book_json_service.add_book_data(book.to_dict())
 
-    ### SEARCH / RETRIEVE
-
     def get_book_by_id(self, book_id):
         if not isinstance(book_id, int):
             raise exc.DataTypeError(
@@ -175,7 +114,32 @@ class BookService:
 
         raise exc.BookNotFoundError(f"Book with ID: {book_id} not found in database.")
 
+    def update_book_data(self, book_id, field, new_value):
+        pass
+
+    def delete_book(self, book_id):
+        pass
+
+    ### EXISTENCE CHECKS
+
+    def book_exists_by_id(self, book_id):
+        pass
+
+    def ensure_book_exists(self, book_id):
+        pass
+
+    ### SEARCH
+
+    def get_books_by_keyword(self):
+        """MAIN SEARCH METHOD"""
+        pass
+
+    def get_books_by_year(self):
+        pass
+
     def get_books_by_title(self, title):
+        """This method will be removed and replaced with searching by keyword."""
+
         if not isinstance(title, str):
             raise exc.DataTypeError(
                 "Please provide correct type of book title to retrieve data."
@@ -201,11 +165,10 @@ class BookService:
 
         return search_result
 
-    def get_books_by_keyword(self):
+    ### AVAILABILITY
+
+    def is_book_available(self, book_id):
         pass
 
-    def get_books_by_year(self):
-        pass
-
-    def get_books_by_category(self):
+    def get_available_books(self):
         pass
