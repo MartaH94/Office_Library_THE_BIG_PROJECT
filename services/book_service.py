@@ -156,12 +156,6 @@ class BookService:
 
         return self.book_json_service.add_book_data(book.to_dict())
 
-    # 3.  get_book_by_id(book_id)
-    # - get_books_by_title(title)
-    # - get_books_by_keyword(keyword)
-    # - get_books_by_year(year)
-    # 7. get_books_by_category(category)
-
     ### SEARCH / RETRIEVE
 
     def get_book_by_id(self, book_id):
@@ -181,8 +175,31 @@ class BookService:
 
         raise exc.BookNotFoundError(f"Book with ID: {book_id} not found in database.")
 
-    def get_books_by_title(self):
-        pass
+    def get_books_by_title(self, title):
+        if not isinstance(title, str):
+            raise exc.DataTypeError(
+                "Please provide correct type of book title to retrieve data."
+            )
+
+        if not title.strip():
+            raise exc.DataError("Please provide book title to retrieve data.")
+
+        searched_title = title.strip().lower()
+        all_books = self.get_all_books()
+
+        search_result = []
+
+        for book in all_books:
+            stored_book_title = book.get("title", "").lower()
+            if searched_title in stored_book_title:
+                search_result.append(Book(**book))
+
+        if not search_result:
+            raise exc.BookNotFoundError(
+                f"No books found matching title: {searched_title}"
+            )
+
+        return search_result
 
     def get_books_by_keyword(self):
         pass
