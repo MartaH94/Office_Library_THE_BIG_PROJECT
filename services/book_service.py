@@ -68,6 +68,39 @@ class BookService:
     def get_all_books(self):
         return self.book_json_service.get_all_books_list()
 
+    def get_book_by_id(self, book_id):
+        if not isinstance(book_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of book ID to retrieve book data."
+            )
+
+        if book_id is None:
+            raise exc.DataError("Please provide book ID to retrieve book data.")
+
+        all_books = self.get_all_books()
+
+        for book in all_books:
+            if book_id == book.get("book_id"):
+                return Book(**book)
+
+        raise exc.BookNotFoundError(f"Book with ID: {book_id} not found in database.")
+
+    ### EXISTENCE CHECKS
+
+    def book_exists_by_id(self, book_id):
+
+        try:
+            self.get_book_by_id(book_id)
+            return True
+        except exc.BookNotFoundError:
+            return False
+
+    def ensure_book_exists(self, book_id):
+
+        self.get_book_by_id(book_id)
+
+    ### CRUD
+
     def add_book(self, book: Book):
         """
         Add validation of: type book (if it is a correct book object), title, author, year
@@ -97,35 +130,10 @@ class BookService:
 
         return self.book_json_service.add_book_data(book.to_dict())
 
-    def get_book_by_id(self, book_id):
-        if not isinstance(book_id, int):
-            raise exc.DataTypeError(
-                "Please provide correct type of book ID to retrieve book data."
-            )
-
-        if book_id is None:
-            raise exc.DataError("Please provide book ID to retrieve book data.")
-
-        all_books = self.get_all_books()
-
-        for book in all_books:
-            if book_id == book.get("book_id"):
-                return Book(**book)
-
-        raise exc.BookNotFoundError(f"Book with ID: {book_id} not found in database.")
-
     def update_book_data(self, book_id, field, new_value):
         pass
 
     def delete_book(self, book_id):
-        pass
-
-    ### EXISTENCE CHECKS
-
-    def book_exists_by_id(self, book_id):
-        pass
-
-    def ensure_book_exists(self, book_id):
         pass
 
     ### SEARCH
