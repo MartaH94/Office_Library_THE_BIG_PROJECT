@@ -7,23 +7,25 @@ class Book:
         author: str,
         title: str,
         publication_year: int,
-        isbn: int,
-        category: list,
-        language: str,
+        isbn: str | None = None,
+        category: list[str] | None = None,
+        language: str | None = None,
     ):
-        self.book_id = None
+
+        self.book_id: int | None = None
+
         self.author = author
         self.title = title
         self.publication_year = publication_year
 
         self.isbn = isbn
-        self.category = category
+        self.category: list[str] = category or []
         self.language = language
 
         self.book_status = "available"
-        self.borrower_id = None
-        self.due_date = None
-        self.last_loan_date = None
+        self.borrower_id: int | None = None
+        self.due_date: str | None = None
+        self.last_loan_date: str | None = None
 
     def to_dict(self):
         return {
