@@ -186,39 +186,34 @@ class BookService:
 
         return search_results
 
-    def get_books_by_year(self):
-        pass
+    def get_books_by_year(self, year):
+        if not isinstance(year, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of year to retrieve data."
+            )
+
+        if year < 1200 or year > 2050:
+            raise exc.DataError(
+                "Please provide valid year of publication to retrieve data."
+            )
+
+        all_books = self.get_all_books()
+        search_results = []
+
+        for book in all_books:
+
+            stored_book_year = book.get("publication_year")
+
+            if year == stored_book_year:
+                search_results.append(Book(**book))
+
+        if not search_results:
+            raise exc.BookNotFoundError(f"No books found published in year: {year}")
+
+        return search_results
 
     def get_books_by_category(self, category):
         pass
-
-    # def get_books_by_title(self, title):
-    #     """This method will be removed and replaced with searching by keyword."""
-
-    #     if not isinstance(title, str):
-    #         raise exc.DataTypeError(
-    #             "Please provide correct type of book title to retrieve data."
-    #         )
-
-    #     if not title.strip():
-    #         raise exc.DataError("Please provide book title to retrieve data.")
-
-    #     searched_title = title.strip().lower()
-    #     all_books = self.get_all_books()
-
-    #     search_result = []
-
-    #     for book in all_books:
-    #         stored_book_title = book.get("title", "").lower()
-    #         if searched_title in stored_book_title:
-    #             search_result.append(Book(**book))
-
-    #     if not search_result:
-    #         raise exc.BookNotFoundError(
-    #             f"No books found matching title: {searched_title}"
-    #         )
-
-    #     return search_result
 
     ### AVAILABILITY
 
