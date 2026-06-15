@@ -149,44 +149,76 @@ class BookService:
         return updated_book_data
 
     def delete_book(self, book_id):
-        pass
+        self.ensure_book_exists(book_id)
+
+        return self.book_json_service.delete_book_by_id(book_id)
 
     ### SEARCH
 
-    def get_books_by_keyword(self):
+    def get_books_by_keyword(self, keyword):
         """MAIN SEARCH METHOD"""
-        pass
+        if not isinstance(keyword, str):
+            raise exc.DataTypeError(
+                "Please provide correct type of keyword to retrieve data."
+            )
+
+        if not keyword.strip():
+            raise exc.DataError("Please provide keyword to retrieve data.")
+
+        searched_keyword = keyword.strip().lower()
+        all_books = self.get_all_books()
+
+        search_results = []
+
+        for book in all_books:
+            stored_book_title = book.get("title", "").lower()
+            stored_book_author = book.get("author", "").lower()
+            if (
+                searched_keyword in stored_book_title
+                or searched_keyword in stored_book_author
+            ):
+                search_results.append(Book(**book))
+
+        if not search_results:
+            raise exc.BookNotFoundError(
+                f"No books found matching keyword: {searched_keyword}"
+            )
+
+        return search_results
 
     def get_books_by_year(self):
         pass
 
-    def get_books_by_title(self, title):
-        """This method will be removed and replaced with searching by keyword."""
+    def get_books_by_category(self, category):
+        pass
 
-        if not isinstance(title, str):
-            raise exc.DataTypeError(
-                "Please provide correct type of book title to retrieve data."
-            )
+    # def get_books_by_title(self, title):
+    #     """This method will be removed and replaced with searching by keyword."""
 
-        if not title.strip():
-            raise exc.DataError("Please provide book title to retrieve data.")
+    #     if not isinstance(title, str):
+    #         raise exc.DataTypeError(
+    #             "Please provide correct type of book title to retrieve data."
+    #         )
 
-        searched_title = title.strip().lower()
-        all_books = self.get_all_books()
+    #     if not title.strip():
+    #         raise exc.DataError("Please provide book title to retrieve data.")
 
-        search_result = []
+    #     searched_title = title.strip().lower()
+    #     all_books = self.get_all_books()
 
-        for book in all_books:
-            stored_book_title = book.get("title", "").lower()
-            if searched_title in stored_book_title:
-                search_result.append(Book(**book))
+    #     search_result = []
 
-        if not search_result:
-            raise exc.BookNotFoundError(
-                f"No books found matching title: {searched_title}"
-            )
+    #     for book in all_books:
+    #         stored_book_title = book.get("title", "").lower()
+    #         if searched_title in stored_book_title:
+    #             search_result.append(Book(**book))
 
-        return search_result
+    #     if not search_result:
+    #         raise exc.BookNotFoundError(
+    #             f"No books found matching title: {searched_title}"
+    #         )
+
+    #     return search_result
 
     ### AVAILABILITY
 
