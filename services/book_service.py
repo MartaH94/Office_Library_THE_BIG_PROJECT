@@ -10,7 +10,9 @@ related to books in the system. It interacts with the storage layer (e.g. JSON s
 to perform CRUD operations and provides high-level methods for working with book data.
 
 
-file status: in progress
+file status:
+all methods are done
+TO DO: Update docstrings
 ________________________________________________________
 
 
