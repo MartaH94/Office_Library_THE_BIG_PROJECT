@@ -250,4 +250,16 @@ class BookService:
         return book.book_status == "available"
 
     def get_available_books(self):
-        pass
+
+        all_books = self.get_all_books()
+
+        available_books = []
+
+        for book in all_books:
+            if book.get("book_status", "") == "available":
+                available_books.append(Book(**book))
+
+        if not available_books:
+            raise exc.BookNotAvailableError("None of the books is available.")
+
+        return available_books
