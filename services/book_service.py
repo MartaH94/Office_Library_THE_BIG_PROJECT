@@ -9,47 +9,10 @@ This module defines the `BookService` class responsible for handling all operati
 related to books in the system. It interacts with the storage layer (e.g. JSON service)
 to perform CRUD operations and provides high-level methods for working with book data.
 
-The service focuses ONLY on book data and does NOT handle borrowing, reservations,
-or user interactions. These responsibilities belong to LoanService.
 
 file status: in progress
 ________________________________________________________
 
-
-CHECKLIST – METHODS TO IMPLEMENT
-========================================================
-
-[CORE – CRUD]
---------------------------------------------------------
-- add_book(book: Book) - done
-- get_all_books() - done
-- get_book_by_id(book_id) - done
-- update_book_data(book_id, field, new_value)
-- delete_book(book_id)
-
---------------------------------------------------------
-
-[EXISTENCE CHECKS]
---------------------------------------------------------
-- book_exists_by_id(book_id) -> bool
-- ensure_book_exists(book_id)
-
---------------------------------------------------------
-
-[SEARCH]
---------------------------------------------------------
-- get_books_by_keyword(keyword)
-    → main search method (title, author, category, etc.)
-
-- get_books_by_year(year)
-    → separate because year is exact-match data
-
---------------------------------------------------------
-
-[AVAILABILITY]
---------------------------------------------------------
-- is_book_available(book_id) -> bool
-- get_available_books()
 
 """
 
@@ -69,13 +32,14 @@ class BookService:
         return self.book_json_service.get_all_books_list()
 
     def get_book_by_id(self, book_id):
+
+        if book_id is None:
+            raise exc.DataError("Please provide book ID to retrieve book data.")
+
         if not isinstance(book_id, int):
             raise exc.DataTypeError(
                 "Please provide correct type of book ID to retrieve book data."
             )
-
-        if book_id is None:
-            raise exc.DataError("Please provide book ID to retrieve book data.")
 
         all_books = self.get_all_books()
 
@@ -116,11 +80,13 @@ class BookService:
             raise exc.BookValidationError("Please provide book author.")
 
         if book.publication_year is None:
-            if not isinstance(book.publication_year, int):
-                raise exc.BookValidationError("Year must be an integer.")
+            raise exc.BookValidationError("Publication year is required.")
 
-            if book.publication_year < 1200 or book.publication_year > 2050:
-                raise exc.BookValidationError("Year must be a valid year.")
+        if not isinstance(book.publication_year, int):
+            raise exc.BookValidationError("Year must be an integer.")
+
+        if book.publication_year < 1200 or book.publication_year > 2050:
+            raise exc.BookValidationError("Year must be a valid year.")
 
         all_books = self.get_all_books()
 
@@ -136,7 +102,7 @@ class BookService:
         if not isinstance(field, str):
             raise exc.DataTypeError("Field name must be a string value type.")
 
-        if not field or not field.strip():
+        if not field.strip():
             raise exc.ValidationError("Selected field to update is an empty value.")
 
         if new_value is None:
@@ -243,8 +209,6 @@ class BookService:
 
     def is_book_available(self, book_id):
 
-        self.ensure_book_exists(book_id)
-
         book = self.get_book_by_id(book_id)
 
         return book.book_status == "available"
@@ -260,6 +224,6 @@ class BookService:
                 available_books.append(Book(**book))
 
         if not available_books:
-            raise exc.BookNotAvailableError("None of the books is available.")
+            raise exc.BookNotAvailableError("No books are available.")
 
         return available_books
