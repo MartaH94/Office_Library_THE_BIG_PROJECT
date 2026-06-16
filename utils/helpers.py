@@ -1,5 +1,16 @@
 # small functions used across the project, eg. generating book IDs, date formatting, etc.
 
+"""
+TO DO HERE:
+- update module docstring
+- implement function generate loan id
+- implement function generate reservation id
+- implement function normalize username
+- implement function format date
+
+
+"""
+
 import random
 
 import exceptions as exc

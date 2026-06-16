@@ -1,5 +1,12 @@
 # book class with atrbutes and methods
 
+"""
+TO DO:
+Update module docstring
+add docstring in Book class and Book category
+
+"""
+
 
 class Book:
     def __init__(

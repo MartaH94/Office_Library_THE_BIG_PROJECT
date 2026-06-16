@@ -1,35 +1,45 @@
 # loan class with attributes and methods (who borrowed the book, when it was borrowed, when it was returned)
 
+"""
+To do:
+- update module docstring
+- buil Loan model
+- implement method to dict
+
+
+"""
+
 from datetime import datetime
 
 import exceptions as exc
 from models.book import Book
+from models.user import User
 
 
-class LoanedBook:
-    def __init__(self, book: Book, borrowed_by, is_borrowed=False, loan_date=None, return_date=None):
-        self.book = book
-        self.borrowed_by = borrowed_by
-        self.is_borrowed = is_borrowed
-        self.loan_date = loan_date or datetime.now()
+class Loan:
+    def __init__(
+        self, user_id: int, book_id: int, loan_date: str, return_date: str | None = None
+    ):
+        self.user_id = user_id
+        self.book_id = book_id
+        self.loan_date = loan_date
         self.return_date = return_date
 
-    def borrow_book(self):
-        if not self.is_borrowed:
-            self.is_borrowed = True
-            self.loan_date = datetime.now()
-            self.return_date = None
-        else:
-            raise exc.AlreadyLoanedError(
-                "The book is already loaned by another user.")
+        loan_id = None
+
+    def to_dict(self):
+        pass
 
 
-class BookReservation:
-    def __init__(self, book: Book, reserved_by, reservation_date=None):
-        self.book = book
-        self.reserved_by = reserved_by
+class Reservation:
+    def __init__(
+        self,
+        user_id: int,
+        book_id: int,
+        reservation_date: str,
+    ):
+        self.reservation_id: int | None = None
+
+        self.user_id = user_id
+        self.book_id = book_id
         self.reservation_date = reservation_date
-
-    def reserve_book(self, reserved_by=None):
-        self.reservation_date = datetime.now()
-        self.reserved_by = reserved_by

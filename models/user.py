@@ -1,5 +1,11 @@
 # class user to represent a user in te library or administrator
-"""This module defines the User class for representing users in the library management system."""
+"""This module defines the User class for representing users in the library management system.
+
+TO DO:
+-update module docstring
+- implement method to_dict() to convert data to dictionary.
+
+"""
 
 import exceptions as exc
 
