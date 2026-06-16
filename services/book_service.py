@@ -242,7 +242,12 @@ class BookService:
     ### AVAILABILITY
 
     def is_book_available(self, book_id):
-        pass
+
+        self.ensure_book_exists(book_id)
+
+        book = self.get_book_by_id(book_id)
+
+        return book.book_status == "available"
 
     def get_available_books(self):
         pass
