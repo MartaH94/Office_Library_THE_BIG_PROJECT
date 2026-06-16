@@ -1,63 +1,45 @@
 # managing loan operations like: borrow, return, view loans, check book availability
 
 """
-
+________________________________________________________
+services.loan_service
+========================================================
+Service for managing loans-related operations.
+________________________________________________________
 
 file status: on hold
+until: loan model is rebuilt
 
 
-NOW BUILDING SERVICES IN FOLLOWING ORDER:
+Methods to implement:
 
-1. UserService
-2. BookService
-3. LoanService
+### CORE
+- borrow_book(user_id, book_id)
+- return_book(book_id)
 
+### VALIDATION
+- validate_book_available(book_id)
+- validate_user_can_borrow(user_id
 
-Wypożyczenia:
-- wypożycz książkę
-- zwróć książkę
-- przedłuż wypożyczenie (opcjonalnie)
+### RETRIEVE
+- get_borrowed_books()
+- get_books_borrowed_by_user(user_id)
+- get_overdue_books()
 
+### STATUS CHECKS
+- is_book_borrowed(book_id) -> bool
+- is_book_overdue(book_id) -> bool
 
-Rezerwacje:
-- zarezerwuj książkę
-- anuluj rezerwację
-- zatwierdź rezerwację (librarian/admin)
-- pobierz listę rezerwacji
+### OTHER
+- get_overdue_books()
 
-
-Status książki:
-- sprawdzenie czy książka jest dostępna
-- sprawdzenie kto wypożyczył książkę
-- sprawdzenie czy użytkownik ma aktywne wypożyczenie
-
-
-Powiązanie z userem:
-- przypisywanie książek do usera
-- historia wypożyczeń usera
-
-
-Integracja z auth
-sprawdzanie permission:
-- borrow_book
-- return_book
-- reserve_book
-- cancel_reservation
-- approve_reservations
-
-
-NOW BUILD SERVICES
-
-1. UserService
-2. BookService
-3. LoanService
 """
 
+import exceptions as exc
 from models.book import Book
-from services.book_service import BookService
 from models.user import User
 from services.authorisation_service import UserAuthorisation
-import exceptions as exc
+from services.book_service import BookService
 
 
 class LoanService:
