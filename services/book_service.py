@@ -213,7 +213,31 @@ class BookService:
         return search_results
 
     def get_books_by_category(self, category):
-        pass
+        if not isinstance(category, str):
+            raise exc.DataTypeError(
+                "Please provide correct type of category to retrieve data."
+            )
+
+        if not category.strip():
+            raise exc.DataError("Please provide category to retrieve data.")
+
+        all_books = self.get_all_books()
+
+        search_results = []
+        searched_category = category.strip().lower()
+
+        for book in all_books:
+            stored_book_categories = book.get("category", [])
+
+            for stored_category in stored_book_categories:
+                if searched_category == stored_category.lower():
+                    search_results.append(Book(**book))
+                    break
+
+        if not search_results:
+            raise exc.BookNotFoundError(f"No books found in category: {category}")
+
+        return search_results
 
     ### AVAILABILITY
 
