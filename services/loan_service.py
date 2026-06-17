@@ -8,80 +8,81 @@ Service for managing loans-related operations.
 ________________________________________________________
 
 file status: on hold
-until: loan model is rebuilt
+on hold due to required implementation reservation logic in loan_json_file_service
 
-
-Methods to implement:
-
-### CORE
-- borrow_book(user_id, book_id)
-- return_book(book_id)
-
-### VALIDATION
-- validate_book_available(book_id)
-- validate_user_can_borrow(user_id
-
-### RETRIEVE
-- get_borrowed_books()
-- get_books_borrowed_by_user(user_id)
-- get_overdue_books()
-
-### STATUS CHECKS
-- is_book_borrowed(book_id) -> bool
-- is_book_overdue(book_id) -> bool
-
-### OTHER
-- get_overdue_books()
 
 """
 
+from datetime import datetime
+
 import exceptions as exc
+from database.loan_json_file_service import LoanJsonFileService
 from models.book import Book
+from models.loan import Loan, Reservation
 from models.user import User
 from services.authorisation_service import UserAuthorisation
 from services.book_service import BookService
+from services.user_service import UserService
 
 
 class LoanService:
-    def __init__(
-        self,
-        user_id,
-        book_id,
-        borrow_date,
-        return_date,
-        borrowed_by,
-        authorisation: UserAuthorisation,
-    ):
-        self.user_id = user_id
-        self.book_id = book_id
-        self.borrow_date = borrow_date
-        self.return_date = return_date
-        self.borrowed_by = borrowed_by
-        self.authorisation = authorisation
+    def __init__(self, loan_json_service=LoanJsonFileService):
+        self.loan_json_service = loan_json_service
 
-    def loan_book(self):
-        pass
-        # this method is not done yet. I need manage JSON files first.
-        # self.logged_user = User(user_id=self.user_id)
-        # self.authorisation.login()
+    ### CORE
 
-        # # if self.logged_user not in users:
-
-        # if not self.logged_user:
-        #     raise exc.UserError("User is not logged into system.")
-
-        # self.book_to_loan = Book()
-        # self.authorisation.check_permission("borrow_book")
-
-        # user_permission = False
-
-        # if self.logged_user: # if logged user permission is true
-        #     BookService.is_book_available(book=self.book_to_loan)
-
-    def return_book(self):
-        self.authorisation.check_permission("return_book")
+    def borrow_book(self, user_id, book_id):
         pass
 
-    def reserve_book(self):
-        self.authorisation.check_permission("book_the_book")
+    def return_book(self, loan_id):
+        pass
+
+    ### VALIDATION
+
+    def ensure_book_available(self, book_id):
+        pass
+
+    def ensure_user_can_borrow(self, user_id):
+        pass
+
+    ### STATUS CHECKS
+
+    def is_book_borrowed(self, book_id):
+        pass
+
+    def is_book_overdue(self, book_id):
+        pass
+
+    ### RETRIEVE
+
+    def get_all_loans(self):
+        pass
+
+    def get_active_loans(self):
+        pass
+
+    def get_loan_by_id(self, loan_id):
+        pass
+
+    def get_books_borrowed_by_user(self, user_id):
+        pass
+
+    def get_overdue_books(self):
+        pass
+
+    ### RESERVATIONS
+
+    def reserve_book(self, user_id, book_id):
+        pass
+
+    def cancel_reservation(self, reservation_id):
+        pass
+
+    def get_all_reservations(self):
+        pass
+
+    def get_reservation_by_id(self):
+        pass
+
+    def get_books_reserved_by_user(self, user_id):
         pass
