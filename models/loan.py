@@ -3,32 +3,31 @@
 """
 To do:
 - update module docstring
-- buil Loan model
-- implement method to dict
 
 
 """
-
-from datetime import datetime
-
-import exceptions as exc
-from models.book import Book
-from models.user import User
 
 
 class Loan:
     def __init__(
         self, user_id: int, book_id: int, loan_date: str, return_date: str | None = None
     ):
+
+        self.loan_id: int | None = None
+
         self.user_id = user_id
         self.book_id = book_id
         self.loan_date = loan_date
         self.return_date = return_date
 
-        loan_id = None
-
     def to_dict(self):
-        pass
+        return {
+            "loan_id": self.loan_id,
+            "user_id": self.user_id,
+            "book_id": self.book_id,
+            "loan_date": self.loan_date,
+            "return_date": self.return_date,
+        }
 
 
 class Reservation:
