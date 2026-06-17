@@ -50,12 +50,31 @@ def generate_book_id(books):
             return book_id
 
 
-def generate_loan_id():
-    pass
+def generate_loan_id(loans):
+    while True:
+        loan_id = random.randint(1000000, 9999999)
+        exists = False
+
+        for loan in loans:
+            if loan["loan_id"] == loan_id:
+                exists = True
+                break
+        if not exists:
+            return loan_id
 
 
-def generate_reservation_id():
-    pass
+def generate_reservation_id(reservations):
+    while True:
+        reservation_id = random.randint(10000, 99999)
+        exists = False
+
+        for reservation in reservations:
+            if reservation["reservation_id"] == reservation_id:
+                exists = True
+                break
+
+        if not exists:
+            return reservation_id
 
 
 # Validation functions
