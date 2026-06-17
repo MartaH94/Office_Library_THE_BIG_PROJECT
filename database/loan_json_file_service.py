@@ -13,6 +13,20 @@ loans, updating loan details, and deleting loan entries. All I/O operations and 
 validation are delegated to JsonFilesService, ensuring consistent data handling across
 the application.
 
+module status: requires refactor !!!
+
+TO DO:
+- build reservation service by adding reservation methods to class LoanJsonFileService
+- prepare reservation_list_file_path
+
+
+# RESERVATION METHODS TO IMPLEMENT:
+get_reservation_data()
+add_reservation_data()
+get_all_reservations_list()
+delete_reservation_data()
+
+
 """
 
 import database.database_schemes as schema
@@ -198,3 +212,17 @@ class LoanJsonFileService:
             )
 
         return f"Loan record with ID {loan_id} has been deleted from database."
+
+    # RESERVATION METHODS:
+
+    def add_reservation_data(self):
+        pass
+
+    def get_reservation_data(self):
+        pass
+
+    def get_all_reservation_list(self):
+        pass
+
+    def delete_reservation_data(self):
+        pass
