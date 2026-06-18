@@ -16,8 +16,6 @@ leveraging a lower-level JSON file service for I/O, validation, and persistence.
 import database.database_schemes as schema
 import exceptions as exc
 from database.json_files_major_services import JsonFilesService
-from models.user import valid_roles
-from database.database_schemes import user_schema
 from utils.config import PROGRAM_USERS_FILE_PATH
 
 
