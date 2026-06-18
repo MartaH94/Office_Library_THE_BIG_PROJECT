@@ -278,5 +278,5 @@ class LoanJsonFileService:
     def get_all_reservation_list(self):
         pass
 
-    def delete_reservation_data(self):
+    def delete_reservation_data(self, reservation_id):
         pass
