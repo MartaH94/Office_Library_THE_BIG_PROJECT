@@ -104,6 +104,12 @@ class ReservationValidationError(LoanError):
     pass
 
 
+class ReservationNotFoundError(LoanError):
+    """Reservation does not exists in a database."""
+
+    pass
+
+
 class AlreadyLoanedError(LoanError):
     """Book is already loaned to this user."""
 
