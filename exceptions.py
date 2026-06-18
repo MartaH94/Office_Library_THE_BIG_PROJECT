@@ -98,6 +98,12 @@ class ReservationError(LoanError):
     pass
 
 
+class ReservationValidationError(LoanError):
+    """Error during validation reservation data."""
+
+    pass
+
+
 class AlreadyLoanedError(LoanError):
     """Book is already loaned to this user."""
 
@@ -207,11 +213,15 @@ class BackupPermissionError(FileError):
 
 
 class DataError(FileError):
+    """Provided data is an empty value."""
+
     def __init__(self, message="Incorrect data value: data cannot be empty value."):
         super().__init__(message)
 
 
 class DataTypeError(FileError):
+    """Provided data has invalid type."""
+
     def __init__(self, message="Data has invalid data type"):
         super().__init__(message)
 
