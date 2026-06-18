@@ -252,8 +252,28 @@ class LoanJsonFileService:
 
         return f"New reservation with ID: {reservation_id} has been created."
 
-    def get_reservation_data(self):
-        pass
+    def get_reservation_data(self, reservation_id):
+        current_data = self.json_service.load_json_file()
+        reservation_found = False
+        reservation_data = None
+
+        if reservation_id is None:
+            raise exc.ValidationError(
+                "Reservation ID is missing or it's an empty value. Getting reservation data not possible."
+            )
+
+        for reservation in current_data:
+            if reservation["reservation_id"] == reservation_id:
+                reservation_data = reservation
+                reservation_found = True
+                break
+
+        if not reservation_found:
+            raise exc.ReservationNotFoundError(
+                f"Reservation with ID: {reservation_id} does not exist in database."
+            )
+
+        return reservation_data
 
     def get_all_reservation_list(self):
         pass
