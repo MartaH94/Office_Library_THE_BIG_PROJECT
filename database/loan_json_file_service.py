@@ -32,7 +32,7 @@ delete_reservation_data()
 import database.database_schemes as schema
 import exceptions as exc
 from database.json_files_major_services import JsonFilesService
-from utils.config import LOANS_LIST_FILE_PATH
+from utils.config import LOANS_LIST_FILE_PATH, RESERVATIONS_LIST_FILE_PATH
 
 
 class LoanJsonFileService:
@@ -215,8 +215,42 @@ class LoanJsonFileService:
 
     # RESERVATION METHODS:
 
-    def add_reservation_data(self):
-        pass
+    def add_reservation_data(self, reservation_data):
+
+        current_data = self.json_service.load_json_file()
+
+        if not reservation_data:
+            raise exc.ValidationError("Reservation data to add is missing.")
+
+        if not isinstance(reservation_data, dict):
+            raise exc.DataTypeError(
+                "Reservation data type is incorrect. Reservation data must be a dict type."
+            )
+
+        try:
+            validated_reservation_data = self.json_service.validate_against_schema(
+                reservation_data, schema.reservation_schema
+            )
+        except exc.ValidationError as e:
+            raise exc.ReservationValidationError(
+                f"Validation failed. Reservation data doesn't match database file schema: {e}"
+            )
+
+        if not isinstance(validated_reservation_data, dict):
+            raise exc.ValidationError("Validated reservation data is not a dictionary")
+
+        reservation_id = validated_reservation_data["reservation_id"]
+
+        for reservation in current_data:
+            if reservation.get("reservation_id") == reservation_id:
+                raise exc.ReservationError(
+                    f"Reservation with ID: {reservation_id} exists in the database. ID must be unique value."
+                )
+
+        current_data.append(validated_reservation_data)
+        self.json_service.write_json_data(current_data)
+
+        return f"New reservation with ID: {reservation_id} has been created."
 
     def get_reservation_data(self):
         pass
