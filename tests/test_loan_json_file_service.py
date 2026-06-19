@@ -6,7 +6,7 @@ Test for the file loan_json_file_service.py
 ________________________________________________________
 
 Test classes: 5 --> 9
-Test cases total: 21 -->
+Test cases total: 21 --> 35
 
 current status: Done --> During Update
 Total number of done test cases: 21 -->
@@ -467,7 +467,7 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 3/3
 ### TESTS FOR RESERVATION METHODS
 
 
-class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):
+class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 0/3
     """Method under the test: add_reservation_data
     Number of TestCases: 5
     Done TestCases:
@@ -497,7 +497,7 @@ class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):
         pass
 
 
-class TestLoanJsonFileServiceGetreservationData(unittest.TestCase):
+class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 0/3
     """Method under the test: get_reservation_data
     Number of TestCases: 3
     Done TestCases:
@@ -519,7 +519,7 @@ class TestLoanJsonFileServiceGetreservationData(unittest.TestCase):
         pass
 
 
-class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):
+class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):  # 0/3
     """Method under the test: get_all_reservation_list
     Number of TestCases: 3
     Done TestCases:
@@ -543,7 +543,7 @@ class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):
         pass
 
 
-class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):
+class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):  # 0/3
     """Method under the test: delete_reservation_data
     Number of TestCases: 3
     Done TestCases:
@@ -558,7 +558,7 @@ class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):
     def test_raises_validation_error_when_resrvation_id_is_none(self):
         pass
 
-    def test_raises_reservation_not__found_error_when_reservation_id_not_found(self):
+    def test_raises_reservation_not_found_error_when_reservation_id_not_found(self):
         pass
 
     def test_removes_reservation_and_writes_json_when_reservation_id_exists(self):

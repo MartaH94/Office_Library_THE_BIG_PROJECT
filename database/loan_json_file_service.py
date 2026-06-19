@@ -329,7 +329,7 @@ class LoanJsonFileService:
                 break
 
         if not reservation_deleted:
-            raise exc.ReservationError(
+            raise exc.ReservationNotFoundError(
                 f"Reservation with ID: {reservation_id}, could not be removed from the database."
             )
 
