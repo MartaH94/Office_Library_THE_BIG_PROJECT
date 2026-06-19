@@ -5,10 +5,10 @@ tests.test_loan_json_file_service.py
 Test for the file loan_json_file_service.py
 ________________________________________________________
 
-Test classes: 5 -->
+Test classes: 5 --> 9
 Test cases total: 21 -->
 
-current status: Done --> Update
+current status: Done --> During Update
 Total number of done test cases: 21 -->
 
 FILE UPDATE
@@ -468,39 +468,101 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 3/3
 
 
 class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):
+    """Method under the test: add_reservation_data
+    Number of TestCases: 5
+    Done TestCases:
+    """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
 
     def tearDown(self):
         self.temporary_dir.cleanup()
+
+    def test_raises_validation_error_when_reservation_data_is_missing(self):
+        pass
+
+    def test_raises_data_type_error_when_reservation_data_is_not_dict(self):
+        pass
+
+    def test_raises_reservation_error_when_reservation_id_already_exists(self):
+        pass
+
+    def test_raises_reservation_validation_error_when_schema_validation_raises_validation_error(
+        self,
+    ):
+        pass
+
+    def test_writes_json_and_returns_success_message_when_data_is_valid(self):
+        pass
 
 
 class TestLoanJsonFileServiceGetreservationData(unittest.TestCase):
+    """Method under the test: get_reservation_data
+    Number of TestCases: 3
+    Done TestCases:
+    """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
 
     def tearDown(self):
         self.temporary_dir.cleanup()
+
+    def test_raises_validation_error_when_reservation_id_is_none(self):
+        pass
+
+    def test_returns_reservation_data_when_id_exists(self):
+        pass
+
+    def test_raises_reservation_not_found_error_when_reservation_id_not_found(self):
+        pass
 
 
 class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):
+    """Method under the test: get_all_reservation_list
+    Number of TestCases: 3
+    Done TestCases:
+    """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
 
     def tearDown(self):
         self.temporary_dir.cleanup()
+
+    def test_returns_all_reservation_list_for_valid_reservation_dicts(self):
+        pass
+
+    def test_raises_reservation_not_found_error_when_database_is_empty(self):
+        pass
+
+    def test_raises_reservation_not_found_error_when_no_valid_reservation_entries_exist(
+        self,
+    ):
+        pass
 
 
 class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):
+    """Method under the test: delete_reservation_data
+    Number of TestCases: 3
+    Done TestCases:
+    """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
 
     def tearDown(self):
         self.temporary_dir.cleanup()
+
+    def test_raises_validation_error_when_resrvation_id_is_none(self):
+        pass
+
+    def test_raises_reservation_not__found_error_when_reservation_id_not_found(self):
+        pass
+
+    def test_removes_reservation_and_writes_json_when_reservation_id_exists(self):
+        pass
 
 
 if __name__ == "__main__":
