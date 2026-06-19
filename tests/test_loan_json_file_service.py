@@ -5,11 +5,15 @@ tests.test_loan_json_file_service.py
 Test for the file loan_json_file_service.py
 ________________________________________________________
 
-Test classes: 5
-Test cases total: 21
+Test classes: 5 -->
+Test cases total: 21 -->
 
-current status: Done
-Total number of done test cases: 21
+current status: Done --> Update
+Total number of done test cases: 21 -->
+
+FILE UPDATE
+Needed implementation of unit test for reservation methods
+
 """
 
 import json
@@ -18,8 +22,8 @@ import unittest
 from pathlib import Path
 
 import exceptions as exc
-from database.json_files_major_services import JsonFilesService
 from database.database_schemes import loan_schema
+from database.json_files_major_services import JsonFilesService
 from database.loan_json_file_service import LoanJsonFileService
 
 
@@ -458,6 +462,45 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 3/3
 
         for loan in updated_loan_data:
             self.assertNotEqual(loan.get("loan_id"), 9001)
+
+
+### TESTS FOR RESERVATION METHODS
+
+
+class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):
+
+    def setUp(self):
+        self.temporary_dir = tempfile.TemporaryDirectory()
+
+    def tearDown(self):
+        self.temporary_dir.cleanup()
+
+
+class TestLoanJsonFileServiceGetreservationData(unittest.TestCase):
+
+    def setUp(self):
+        self.temporary_dir = tempfile.TemporaryDirectory()
+
+    def tearDown(self):
+        self.temporary_dir.cleanup()
+
+
+class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):
+
+    def setUp(self):
+        self.temporary_dir = tempfile.TemporaryDirectory()
+
+    def tearDown(self):
+        self.temporary_dir.cleanup()
+
+
+class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):
+
+    def setUp(self):
+        self.temporary_dir = tempfile.TemporaryDirectory()
+
+    def tearDown(self):
+        self.temporary_dir.cleanup()
 
 
 if __name__ == "__main__":
