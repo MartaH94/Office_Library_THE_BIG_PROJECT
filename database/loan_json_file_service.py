@@ -216,6 +216,12 @@ class LoanJsonFileService:
     # RESERVATION METHODS:
 
     def add_reservation_data(self, reservation_data):
+        """Add a new reservation record to the JSON file.
+        Args:
+            reservation_data (dict): The reservation data to add.
+        Returns:
+            str: Message with confirmation of success.
+        """
 
         current_data = self.json_service.load_json_file()
 
@@ -253,6 +259,13 @@ class LoanJsonFileService:
         return f"New reservation with ID: {reservation_id} has been created."
 
     def get_reservation_data(self, reservation_id):
+        """Retrieve a single reservation record by its ID.
+        Args:
+            reservation_id (int): ID of the reservation to retrieve.
+        Returns:
+            reservation_data (dict): The matching reservation record.
+        """
+
         current_data = self.json_service.load_json_file()
         reservation_found = False
         reservation_data = None
@@ -276,7 +289,50 @@ class LoanJsonFileService:
         return reservation_data
 
     def get_all_reservation_list(self):
-        pass
+        """Retrieve all reservation records from the database.
+        Returns:
+            all_reservations (list): List of all reservation records.
+        """
+
+        current_data = self.json_service.load_json_file()
+        all_reservations = []
+
+        for reservation in current_data:
+            if isinstance(reservation, dict) and "reservation_id" in reservation:
+                all_reservations.append(reservation)
+
+        if not all_reservations:
+            raise exc.ReservationNotFoundError("No reservation found in the database.")
+
+        return all_reservations
 
     def delete_reservation_data(self, reservation_id):
-        pass
+        """Delete a reservation record by its ID.
+        Args:
+            reservation_id (int): ID of the reservation to delete.
+        Returns:
+            str: Message with confirmation of success.
+        """
+
+        current_data = self.json_service.load_json_file()
+        reservation_deleted = False
+
+        if reservation_id is None:
+            raise exc.ValidationError(
+                "Reservation ID is missing or it's an empty value."
+            )
+
+        for reservation in current_data:
+            if reservation.get("reservation_id") == reservation_id:
+                current_data.remove(reservation)
+                reservation_deleted = True
+                break
+
+        if not reservation_deleted:
+            raise exc.ReservationError(
+                f"Reservation with ID: {reservation_id}, could not be removed from the database."
+            )
+
+        self.json_service.write_json_data(current_data)
+
+        return f"Reservation with ID {reservation_id} has been removed from database."
