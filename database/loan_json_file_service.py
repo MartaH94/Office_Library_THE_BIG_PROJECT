@@ -250,7 +250,7 @@ class LoanJsonFileService:
         for reservation in current_data:
             if reservation.get("reservation_id") == reservation_id:
                 raise exc.ReservationError(
-                    f"Reservation with ID: {reservation_id} exists in the database. ID must be unique value."
+                    f"Reservation with ID: {reservation_id} exists in the database. Reservation ID must be unique value."
                 )
 
         current_data.append(validated_reservation_data)
