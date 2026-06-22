@@ -22,7 +22,7 @@ import unittest
 from pathlib import Path
 
 import exceptions as exc
-from database.database_schemes import loan_schema
+from database.database_schemes import loan_schema, reservation_schema
 from database.json_files_major_services import JsonFilesService
 from database.loan_json_file_service import LoanJsonFileService
 
@@ -475,25 +475,62 @@ class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 0/3
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_reservation_list = [
+            {
+                "reservation_id": 12345,
+                "user_id": 11223344,
+                "book_id": 123789987,
+                "reservation_date": "2026-06-22",
+            },
+            {
+                "reservation_id": 12456,
+                "user_id": 147258369,
+                "book_id": 258369147,
+                "reservation_date": "2026-06-01",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_reservation_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=reservation_schema
+        )
+
+        self.reservation_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_reservation_data_is_missing(self):
-        pass
+        """expected behavior: raises ValidationError when reservation_data is missing or it's an empty value"""
+
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.reservation_service.add_reservation_data(None)
+
+        self.assertIn("Reservation data to add is missing", str(cm.exception))
 
     def test_raises_data_type_error_when_reservation_data_is_not_dict(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_error_when_reservation_id_already_exists(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_validation_error_when_schema_validation_raises_validation_error(
         self,
     ):
+        """expected behavior:"""
         pass
 
     def test_writes_json_and_returns_success_message_when_data_is_valid(self):
+        """expected behavior:"""
         pass
 
 
@@ -510,12 +547,15 @@ class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_reservation_id_is_none(self):
+        """expected behavior:"""
         pass
 
     def test_returns_reservation_data_when_id_exists(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_not_found_error_when_reservation_id_not_found(self):
+        """expected behavior:"""
         pass
 
 
@@ -532,14 +572,17 @@ class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_returns_all_reservation_list_for_valid_reservation_dicts(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_not_found_error_when_database_is_empty(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_not_found_error_when_no_valid_reservation_entries_exist(
         self,
     ):
+        """expected behavior:"""
         pass
 
 
@@ -556,12 +599,15 @@ class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):  # 0/3
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_resrvation_id_is_none(self):
+        """expected behavior:"""
         pass
 
     def test_raises_reservation_not_found_error_when_reservation_id_not_found(self):
+        """expected behavior:"""
         pass
 
     def test_removes_reservation_and_writes_json_when_reservation_id_exists(self):
+        """expected behavior:"""
         pass
 
 
