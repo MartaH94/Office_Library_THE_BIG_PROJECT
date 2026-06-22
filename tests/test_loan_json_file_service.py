@@ -576,29 +576,70 @@ class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 5/5
             self.assertIn(data_to_add, json.load(f))
 
 
-class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 0/3
+class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 3/3
     """Method under the test: get_reservation_data
     Number of TestCases: 3
-    Done TestCases:
+    Done TestCases: 3
     """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.valid_reservation_list = [
+            {
+                "reservation_id": 12345,
+                "user_id": 11223344,
+                "book_id": 123789987,
+                "reservation_date": "2026-06-22",
+            },
+            {
+                "reservation_id": 12456,
+                "user_id": 147258369,
+                "book_id": 258369147,
+                "reservation_date": "2026-06-01",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(self.valid_reservation_list, f)
+
+        self.major_json_service = JsonFilesService(
+            file_path=self.test_json_file_path, schema=reservation_schema
+        )
+
+        self.reservation_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
 
     def test_raises_validation_error_when_reservation_id_is_none(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ValidationError when reservation ID is None"""
+
+        with self.assertRaises(exc.ValidationError) as cm:
+            self.reservation_service.get_reservation_data(None)
+
+        self.assertIn(
+            "Reservation ID is missing or it's an empty value", str(cm.exception)
+        )
 
     def test_returns_reservation_data_when_id_exists(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: returns reservation data dict when reservation_id is correct and exists in database"""
+
+        expected_reservation_data = self.valid_reservation_list[0]
+        test_result = self.reservation_service.get_reservation_data(12345)
+        self.assertEqual(test_result, expected_reservation_data)
 
     def test_raises_reservation_not_found_error_when_reservation_id_not_found(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ReservationNotFoundError when reservation_id does not exists in database"""
+
+        with self.assertRaises(exc.ReservationNotFoundError) as cm:
+            self.reservation_service.get_reservation_data(23456)
+
+        self.assertIn("does not exist in database", str(cm.exception))
 
 
 class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):  # 0/3
