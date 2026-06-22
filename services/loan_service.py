@@ -7,9 +7,7 @@ services.loan_service
 Service for managing loans-related operations.
 ________________________________________________________
 
-file status: on hold
-on hold due to required implementation reservation logic in loan_json_file_service
-
+file status: in progress
 
 """
 
@@ -32,6 +30,8 @@ class LoanService:
     ### CORE
 
     def borrow_book(self, user_id, book_id):
+
+        # I am here
         pass
 
     def return_book(self, loan_id):
