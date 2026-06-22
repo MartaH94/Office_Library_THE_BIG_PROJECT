@@ -130,3 +130,5 @@ documents/.obsidian/core-plugins.json
 documents/.obsidian/workspace.json
 documents/.obsidian/workspace.json
 documents/.obsidian/core-plugins.json
+tests/__pycache__/test_loan_json_file_service.cpython-313.pyc
+tests/__pycache__/test_loan_json_file_service.cpython-313.pyc
