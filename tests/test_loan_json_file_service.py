@@ -642,31 +642,77 @@ class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 3/3
         self.assertIn("does not exist in database", str(cm.exception))
 
 
-class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):  # 0/3
+class TestLoanJsonFileServiceGetAllReservationList(unittest.TestCase):  # 3/3
     """Method under the test: get_all_reservation_list
     Number of TestCases: 3
-    Done TestCases:
+    Done TestCases: 3
     """
 
     def setUp(self):
         self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_dir_path = Path(self.temporary_dir.name)
+        self.test_json_file_path = self.temporary_dir_path / "test_file.json"
+
+        self.major_json_service = JsonFilesService(file_path=self.test_json_file_path)
+
+        self.reservation_service = LoanJsonFileService(
+            self.major_json_service, file_path=self.test_json_file_path
+        )
 
     def tearDown(self):
         self.temporary_dir.cleanup()
 
     def test_returns_all_reservation_list_for_valid_reservation_dicts(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: returns list of all reservation dicts when valid entries exist in database"""
+
+        valid_reservation_list = [
+            {
+                "reservation_id": 12345,
+                "user_id": 11223344,
+                "book_id": 123789987,
+                "reservation_date": "2026-06-22",
+            },
+            {
+                "reservation_id": 12456,
+                "user_id": 147258369,
+                "book_id": 258369147,
+                "reservation_date": "2026-06-01",
+            },
+        ]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(valid_reservation_list, f)
+
+        expected_result = valid_reservation_list
+        test_result = self.reservation_service.get_all_reservation_list()
+
+        self.assertEqual(test_result, expected_result)
 
     def test_raises_reservation_not_found_error_when_database_is_empty(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ReservationNotFoundError when no reservation entries exist in database"""
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump([], f)
+
+        with self.assertRaises(exc.ReservationNotFoundError) as cm:
+            self.reservation_service.get_all_reservation_list()
+
+        self.assertIn("No reservation found in the database", str(cm.exception))
 
     def test_raises_reservation_not_found_error_when_no_valid_reservation_entries_exist(
         self,
     ):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ReservationNotFoundError when no valid reservation entries exist in database"""
+
+        invalid_entries = ["reservation1", "reservation2"]
+
+        with self.test_json_file_path.open("w", encoding="utf-8") as f:
+            json.dump(invalid_entries, f)
+
+        with self.assertRaises(exc.ReservationNotFoundError) as cm:
+            self.reservation_service.get_all_reservation_list()
+
+        self.assertIn("No reservation found in the database", str(cm.exception))
 
 
 class TestLoanJsonFileServiceDeleteReservationData(unittest.TestCase):  # 0/3
