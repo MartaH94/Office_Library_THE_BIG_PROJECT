@@ -516,12 +516,29 @@ class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 0/3
         self.assertIn("Reservation data to add is missing", str(cm.exception))
 
     def test_raises_data_type_error_when_reservation_data_is_not_dict(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises DataTypeError when reservation data type is incorrect. Expected type is dict."""
+
+        data_to_add = [65432, 985236471, 698523564, "2026-04-05"]
+
+        with self.assertRaises(exc.DataTypeError) as cm:
+            self.reservation_service.add_reservation_data(data_to_add)
+
+        self.assertIn("Reservation data must be a dict", str(cm.exception))
 
     def test_raises_reservation_error_when_reservation_id_already_exists(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ReservationError when reservation_id in reservaton_data already exists in database"""
+
+        data_to_add = {
+            "reservation_id": 12345,
+            "user_id": 11223344,
+            "book_id": 451254784,
+            "reservation_date": "2026-06-22",
+        }
+
+        with self.assertRaises(exc.ReservationError) as cm:
+            self.reservation_service.add_reservation_data(data_to_add)
+
+        self.assertIn("Reservation ID must be unique value", str(cm.exception))
 
     def test_raises_reservation_validation_error_when_schema_validation_raises_validation_error(
         self,
