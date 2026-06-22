@@ -5,8 +5,8 @@ tests.test_loan_json_file_service.py
 Test for the file loan_json_file_service.py
 ________________________________________________________
 
-Test classes: 5 --> 9
-Test cases total: 21 --> 35
+Test classes: 9
+Test cases total: 35
 
 current status: Done --> During Update
 Total number of done test cases: 21 -->
@@ -467,10 +467,10 @@ class TestLoanJsonFileServiceDeleteLoanDataFromFile(unittest.TestCase):  # 3/3
 ### TESTS FOR RESERVATION METHODS
 
 
-class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 0/3
+class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 5/5
     """Method under the test: add_reservation_data
     Number of TestCases: 5
-    Done TestCases:
+    Done TestCases: 5
     """
 
     def setUp(self):
@@ -543,12 +543,37 @@ class TestLoanJsonFileServiceAddReservationData(unittest.TestCase):  # 0/3
     def test_raises_reservation_validation_error_when_schema_validation_raises_validation_error(
         self,
     ):
-        """expected behavior:"""
-        pass
+        """expected behavior: raises ReservationValidationError when reservation_data doesn't match database file schema and schema validation raises Validation Error"""
+
+        data_to_add = {
+            "reservation_id": 12925,
+            "book_id": 985632547,
+            "reservation_date": "2026-06-22",
+        }
+
+        with self.assertRaises(exc.ReservationValidationError) as cm:
+            self.reservation_service.add_reservation_data(data_to_add)
+
+        self.assertIn(
+            "Reservation data doesn't match database file schema", str(cm.exception)
+        )
 
     def test_writes_json_and_returns_success_message_when_data_is_valid(self):
-        """expected behavior:"""
-        pass
+        """expected behavior: writes reservation_data to json file and returns success message when data is valid"""
+
+        data_to_add = {
+            "reservation_id": 23654,
+            "user_id": 365247855,
+            "book_id": 965855413,
+            "reservation_date": "2026-06-22",
+        }
+
+        test_result = self.reservation_service.add_reservation_data(data_to_add)
+
+        self.assertIn("New reservation with ID", test_result)
+
+        with self.test_json_file_path.open("r", encoding="utf-8") as f:
+            self.assertIn(data_to_add, json.load(f))
 
 
 class TestLoanJsonFileServiceGetReservationData(unittest.TestCase):  # 0/3
