@@ -88,6 +88,7 @@ class LoanService:
     ### CORE
 
     def borrow_book(self, user_id, book_id):
+        """This method description"""
 
         if not user_id:
             raise exc.UserValidationError(
@@ -106,6 +107,7 @@ class LoanService:
             raise exc.BookValidationError("Book ID must be a number.")
 
         # available_books = self.book_service.get_available_books()
+        # I AM HERE
 
     def return_book(self, loan_id):
         pass
