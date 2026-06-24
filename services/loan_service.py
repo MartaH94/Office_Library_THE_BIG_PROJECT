@@ -103,23 +103,30 @@ class LoanService:
         if not current_user:
             raise exc.PermissionError("User must be logged in to borrow a book.")
 
-        self.user_authorisation_service.check_permission("borrow_book")
+        self.user_authorisation_service.check_permission("books.borrow_book")
+
+        self.book_service.ensure_book_exists(book_id)
 
         if not self.book_service.is_book_available(book_id):
             raise exc.BookNotAvailableError("Book is currently unavailable.")
 
+        now = datetime.now()
+
         new_loan = Loan(
             user_id=current_user.user_id,
             book_id=book_id,
-            loan_date=datetime.now().strftime("%Y-%m-%d"),
-            return_date=(datetime.now() + timedelta(days=21)).strftime("%Y-%m-%d"),
+            loan_date=now.strftime("%Y-%m-%d"),
+            return_date=(now + timedelta(days=21)).strftime("%Y-%m-%d"),
         )
 
-        self.book_service.update_book_data(
-            book_id=book_id, field="book_status", new_value="borrowed"
-        )
+        self.loan_data_service.add_loan_data(new_loan.to_dict())
 
-        self.loan_data_service.add_loan_data(vars(new_loan))
+        self.book_service.mark_book_as_borrowed(
+            book_id=book_id,
+            user_id=new_loan.user_id,
+            due_date=new_loan.return_date,
+            loan_date=new_loan.loan_date,
+        )
 
         return new_loan
 
