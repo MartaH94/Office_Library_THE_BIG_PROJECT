@@ -11,7 +11,7 @@ file status: in progress
 
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import exceptions as exc
 from database.book_json_file_service import BookJsonFileService
@@ -87,16 +87,8 @@ class LoanService:
 
     ### CORE
 
-    def borrow_book(self, user_id, book_id):
-        """This method description"""
-
-        if not user_id:
-            raise exc.UserValidationError(
-                "Please provide user ID to proceed borrowing the book."
-            )
-
-        if not isinstance(user_id, int):
-            raise exc.UserValidationError("User ID must be a number.")
+    def borrow_book(self, book_id):
+        """This method is not finished yet"""
 
         if not book_id:
             raise exc.BookValidationError(
@@ -106,8 +98,30 @@ class LoanService:
         if not isinstance(book_id, int):
             raise exc.BookValidationError("Book ID must be a number.")
 
-        # available_books = self.book_service.get_available_books()
-        # I AM HERE
+        current_user = self.user_authorisation_service.get_current_user()
+
+        if not current_user:
+            raise exc.PermissionError("User must be logged in to borrow a book.")
+
+        self.user_authorisation_service.check_permission("borrow_book")
+
+        if not self.book_service.is_book_available(book_id):
+            raise exc.BookNotAvailableError("Book is currently unavailable.")
+
+        new_loan = Loan(
+            user_id=current_user.user_id,
+            book_id=book_id,
+            loan_date=datetime.now().strftime("%Y-%m-%d"),
+            return_date=(datetime.now() + timedelta(days=21)).strftime("%Y-%m-%d"),
+        )
+
+        self.book_service.update_book_data(
+            book_id=book_id, field="book_status", new_value="borrowed"
+        )
+
+        self.loan_data_service.add_loan_data(vars(new_loan))
+
+        return new_loan
 
     def return_book(self, loan_id):
         pass
