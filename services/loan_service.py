@@ -36,6 +36,7 @@ from utils.config import (
     RESERVATIONS_LIST_FILE_PATH,
     THE_LIBRARY_FILE_PATH,
 )
+from utils.helpers import generate_loan_id, generate_reservation_id
 
 
 class LoanService:
@@ -125,6 +126,15 @@ class LoanService:
             loan_date=now.strftime("%Y-%m-%d"),
             return_date=(now + timedelta(days=21)).strftime("%Y-%m-%d"),
         )
+
+        try:
+            all_loans = self.loan_data_service.get_all_loans_list()
+        except exc.LoanNotFoundError:
+            all_loans = []
+
+        loan_id = generate_loan_id(all_loans)
+
+        new_loan.loan_id = loan_id
 
         self.loan_data_service.add_loan_data(new_loan.to_dict())
 
