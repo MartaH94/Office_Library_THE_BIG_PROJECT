@@ -88,7 +88,14 @@ class LoanService:
     ### CORE
 
     def borrow_book(self, book_id):
-        """This method is not finished yet"""
+        """This method allows a user to borrow a book by its ID. It checks for the book's availability, the user's permissions, and creates a new loan record if all conditions are met. It updates the book's status to indicate that it is currently borrowed and sets return date for the loan.
+
+        Args:
+            book_id (int): The ID of the book to be borrowed.
+
+        Returns:
+            Loan: A Loan object representing the newly created loan record.
+        """
 
         if not book_id:
             raise exc.BookValidationError(
