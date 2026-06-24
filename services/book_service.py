@@ -116,6 +116,15 @@ class BookService:
 
         return updated_book_data
 
+    def mark_book_as_borrowed(self, book_id, user_id, due_date, loan_date):
+
+        self.ensure_book_exists(book_id)
+
+        self.update_book_data(book_id, "borrower_id", user_id)
+        self.update_book_data(book_id, "due_date", due_date)
+        self.update_book_data(book_id, "last_loan_date", loan_date)
+        self.update_book_data(book_id, "book_status", "borrowed")
+
     def delete_book(self, book_id):
         self.ensure_book_exists(book_id)
 
