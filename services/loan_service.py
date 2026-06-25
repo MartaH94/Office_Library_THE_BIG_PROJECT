@@ -88,13 +88,15 @@ class LoanService:
 
     ### VALIDATION HELPERS
 
-    def ensure_user_has_permission_to_borrow(self, user_id):
-        """Veryfing that user have permissions and user's role enables borrowing the book."""
-        # self.user_authorisation_service.check_permission("books.borrow_book")
+    def ensure_user_has_permission_to_borrow(self):
+        """Veryfing that the currently logged-in user have permissions to borrow the book."""
+        self.user_authorisation_service.check_permission("books.borrow_book")
 
     def ensure_book_available(self, book_id):
         """Veryfing that book status is 'available' and book can be borrowed by user."""
-        pass
+
+        if not self.book_service.is_book_available(book_id=book_id):
+            raise exc.BookNotAvailableError("Book is currently unavailable.")
 
     def ensure_loan_exists(self, loan_id):
         """This method is for veryfing if the loan entry exists in database."""
