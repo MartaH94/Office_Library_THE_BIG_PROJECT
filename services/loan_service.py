@@ -9,8 +9,6 @@ ________________________________________________________
 
 file status: in progress
 
-VERIFY THE ORDER OF METHODS!!!
-
 """
 
 from datetime import datetime, timedelta
@@ -90,13 +88,19 @@ class LoanService:
 
     ### VALIDATION HELPERS
 
+    def ensure_user_has_permission_to_borrow(self, user_id):
+        """Veryfing that user have permissions and user's role enables borrowing the book."""
+        # self.user_authorisation_service.check_permission("books.borrow_book")
+
     def ensure_book_available(self, book_id):
         """Veryfing that book status is 'available' and book can be borrowed by user."""
         pass
 
-    def ensure_user_can_borrow(self, user_id):
-        """Veryfing that user have permissions and user's role enables borrowing the book."""
-        self.user_authorisation_service.check_permission("books.borrow_book")
+    def ensure_loan_exists(self, loan_id):
+        """This method is for veryfing if the loan entry exists in database."""
+        pass
+
+    ### STATUS CHECKS
 
     def is_book_borrowed(self, book_id):
         """Checking if the book is borrowed to quickly confirm its status
@@ -105,19 +109,20 @@ class LoanService:
         """
         pass
 
-    def get_books_borrowed_by_user(self, user_id):
-        """Method to retrieve the list of books borrowed by current user"""
-        pass
-
-    def get_overdue_books(self):
-        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
-        pass
-
     def is_book_overdue(self, book_id):
         """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
         pass
 
-    ### BORROWING BOOK
+    ### USER‑FOCUSED RETRIEVE
+
+    def get_books_borrowed_by_user(self, user_id):
+        """Method to retrieve the list of books borrowed by current user"""
+        pass
+
+    def get_user_overdue_books(self):
+        pass
+
+    ### CORE ACTIONS
 
     def borrow_book(self, book_id):
         """This method requires refactoring!
@@ -185,17 +190,11 @@ class LoanService:
 
         return new_loan
 
-    ### RETURNING BOOK
-
-    def ensure_loan_exists(self, loan_id):
-        """This method is for veryfing if the loan entry exists in database."""
-        pass
-
     def return_book(self, loan_id):
         """Method to enable user return the borrowed books. It also verifies if the loan exits before further actions."""
         pass
 
-    ### RETRIEVE LOAN DATA
+    ### GLOBAL RETRIEVE
 
     def get_all_loans(self):
         """Method to retrieve all loans list from database"""
@@ -209,18 +208,22 @@ class LoanService:
         """Method to retrieve loan details by loan id"""
         pass
 
+    def get_overdue_books(self):
+        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
+        pass
+
     ### RESERVATIONS
 
     def reserve_book(self, user_id, book_id):
         """Method that enables user to reserve a book."""
         pass
 
-    def cancel_reservation(self, reservation_id):
-        """Method that enables user to cancel the book reservation."""
-        pass
-
     def borrow_reserved_book(self):
         """Method that enables user to borrow the book which was reserved by user earlier."""
+        pass
+
+    def cancel_reservation(self, reservation_id):
+        """Method that enables user to cancel the book reservation."""
         pass
 
     def get_all_reservations(self):
