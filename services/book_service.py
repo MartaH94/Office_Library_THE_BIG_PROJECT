@@ -65,7 +65,7 @@ class BookService:
 
         self.get_book_by_id(book_id)
 
-    ### CRUD
+    ### CORE
 
     def add_book(self, book: Book):
         """

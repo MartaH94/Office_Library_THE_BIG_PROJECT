@@ -100,16 +100,24 @@ class LoanService:
 
     def ensure_loan_exists(self, loan_id):
         """This method is for veryfing if the loan entry exists in database."""
-        pass
+
+        try:
+            self.get_loan_by_id(loan_id)
+            return True
+        except exc.LoanNotFoundError:
+            return False
 
     ### STATUS CHECKS
 
     def is_book_borrowed(self, book_id):
         """Checking if the book is borrowed to quickly confirm its status
 
-        retrurns True/False value
+        retrurns True if book is borrwed and False if book is available
+
         """
-        pass
+        book = self.book_service.get_book_by_id(book_id)
+
+        return book.book_status == "borrowed"
 
     def is_book_overdue(self, book_id):
         """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
