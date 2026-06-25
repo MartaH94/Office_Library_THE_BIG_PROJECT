@@ -9,6 +9,8 @@ ________________________________________________________
 
 file status: in progress
 
+VERIFY THE ORDER OF METHODS!!!
+
 """
 
 from datetime import datetime, timedelta
@@ -86,10 +88,45 @@ class LoanService:
         # Authorisation Service
         self.user_authorisation_service = UserAuthorisation()
 
-    ### CORE
+    ### VALIDATION HELPERS
+
+    def ensure_book_available(self, book_id):
+        """Veryfing that book status is 'available' and book can be borrowed by user."""
+        pass
+
+    def ensure_user_can_borrow(self, user_id):
+        """Veryfing that user have permissions and user's role enables borrowing the book."""
+        self.user_authorisation_service.check_permission("books.borrow_book")
+
+    def is_book_borrowed(self, book_id):
+        """Checking if the book is borrowed to quickly confirm its status
+
+        retrurns True/False value
+        """
+        pass
+
+    def get_books_borrowed_by_user(self, user_id):
+        """Method to retrieve the list of books borrowed by current user"""
+        pass
+
+    def get_overdue_books(self):
+        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
+        pass
+
+    def is_book_overdue(self, book_id):
+        """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
+        pass
+
+    ### BORROWING BOOK
 
     def borrow_book(self, book_id):
-        """This method allows a user to borrow a book by its ID. It checks for the book's availability, the user's permissions, and creates a new loan record if all conditions are met. It updates the book's status to indicate that it is currently borrowed and sets return date for the loan.
+        """This method requires refactoring!
+
+        This method allows a user to borrow a book by its ID. It checks for the book's availability, the user's permissions, and creates a new loan record if all conditions are met. It updates the book's status to indicate that it is currently borrowed and sets return date for the loan.
+
+        Book can be borrowed only if it's status is 'available'. Books which are 'reserved' cannot be borrowed by user who is not the user who reserved the book.
+
+        Book reserved by particular user can be borrowed by this user.
 
         Args:
             book_id (int): The ID of the book to be borrowed.
@@ -111,6 +148,7 @@ class LoanService:
         if not current_user:
             raise exc.PermissionError("User must be logged in to borrow a book.")
 
+        # I have method ensure_user_can_borrow. I want to replace line below with calling this helper method.
         self.user_authorisation_service.check_permission("books.borrow_book")
 
         self.book_service.ensure_book_exists(book_id)
@@ -147,55 +185,52 @@ class LoanService:
 
         return new_loan
 
+    ### RETURNING BOOK
+
+    def ensure_loan_exists(self, loan_id):
+        """This method is for veryfing if the loan entry exists in database."""
+        pass
+
     def return_book(self, loan_id):
+        """Method to enable user return the borrowed books. It also verifies if the loan exits before further actions."""
         pass
 
-    ### VALIDATION
-
-    def ensure_book_available(self, book_id):
-        pass
-
-    def ensure_user_can_borrow(self, user_id):
-        pass
-
-    ### STATUS CHECKS
-
-    def is_book_borrowed(self, book_id):
-        pass
-
-    def is_book_overdue(self, book_id):
-        pass
-
-    ### RETRIEVE
+    ### RETRIEVE LOAN DATA
 
     def get_all_loans(self):
+        """Method to retrieve all loans list from database"""
         pass
 
     def get_active_loans(self):
+        """Method to retrieve loans list that are currently active"""
         pass
 
     def get_loan_by_id(self, loan_id):
-        pass
-
-    def get_books_borrowed_by_user(self, user_id):
-        pass
-
-    def get_overdue_books(self):
+        """Method to retrieve loan details by loan id"""
         pass
 
     ### RESERVATIONS
 
     def reserve_book(self, user_id, book_id):
+        """Method that enables user to reserve a book."""
         pass
 
     def cancel_reservation(self, reservation_id):
+        """Method that enables user to cancel the book reservation."""
+        pass
+
+    def borrow_reserved_book(self):
+        """Method that enables user to borrow the book which was reserved by user earlier."""
         pass
 
     def get_all_reservations(self):
+        """Method that allows to retrieve a list with all reservations from database."""
         pass
 
     def get_reservation_by_id(self):
+        """Method that allows to retrieve data about particular reservation by reservation id"""
         pass
 
     def get_books_reserved_by_user(self, user_id):
+        """Method to get the list with all acvtive reservations of books by particular user."""
         pass
