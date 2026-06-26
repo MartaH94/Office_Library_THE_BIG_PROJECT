@@ -220,24 +220,11 @@ class LoanService:
         if not self.is_book_borrowed(book_id):
             return False
 
-        active_loans = self.get_active_loans()
+        overdue_loans = self.get_overdue_books()
 
-        return_date = None
-
-        today = datetime.now().date()
-
-        for loan in active_loans:
+        for loan in overdue_loans:
             if loan["book_id"] == book_id:
-                return_date = loan["return_date"]
-                break
-
-        if not return_date:
-            return False
-
-        return_date = datetime.strptime(return_date, "%Y-%m-%d").date()
-
-        if today > return_date:
-            return True
+                return True
 
         return False
 
