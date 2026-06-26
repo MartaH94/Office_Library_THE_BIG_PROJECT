@@ -166,7 +166,7 @@ class LoanService:
 
         return active_loans
 
-    def get_overdue_books(self):
+    def get_overdue_books(self):  # done
         """
         Method to retrieve the list of all books that are borrowed and its return date has gone.
         """
@@ -187,11 +187,11 @@ class LoanService:
 
     ### VALIDATION HELPERS
 
-    def ensure_user_has_permission_to_borrow(self):
+    def ensure_user_has_permission_to_borrow(self):  # done
         """Veryfing that the currently logged-in user have permissions to borrow the book."""
         self.user_authorisation_service.check_permission("books.borrow_book")
 
-    def ensure_book_available(self, book_id):
+    def ensure_book_available(self, book_id):  # done
         """Veryfing that book status is 'available' and book can be borrowed by user."""
 
         if not self.book_service.is_book_available(book_id=book_id):
@@ -199,7 +199,7 @@ class LoanService:
 
     ### STATUS CHECKS
 
-    def is_book_borrowed(self, book_id):
+    def is_book_borrowed(self, book_id):  # done
         """
         METHOD NOT FINISHED YET
 
@@ -212,7 +212,7 @@ class LoanService:
 
         return book.book_status == "borrowed"
 
-    def is_book_overdue(self, book_id):
+    def is_book_overdue(self, book_id):  # done
         """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
 
         self.book_service.ensure_book_exists(book_id)
@@ -230,7 +230,7 @@ class LoanService:
 
     ### USER‑FOCUSED RETRIEVE
 
-    def get_books_borrowed_by_user(self, user_id):
+    def get_books_borrowed_by_user(self, user_id):  # done
         """Method to retrieve the list of books borrowed by current user"""
 
         if user_id is None:
@@ -259,8 +259,25 @@ class LoanService:
 
         return user_books
 
-    def get_user_overdue_books(self):
-        pass
+    def get_user_overdue_books(self, user_id):  # done
+
+        if user_id is None:
+            raise exc.DataError("Please provide user ID to retrieve user overdue books")
+
+        if not isinstance(user_id, int):
+            raise exc.DataTypeError(
+                "Please provide user ID to retrieve user overdue books"
+            )
+
+        user_borrowed_books = self.get_books_borrowed_by_user(user_id)
+
+        overdue_books = []
+
+        for book in user_borrowed_books:
+            if self.is_book_overdue(book["book_id"]):
+                overdue_books.append(book)
+
+        return overdue_books
 
     ### CORE ACTIONS
 
