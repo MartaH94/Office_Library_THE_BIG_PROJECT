@@ -107,15 +107,20 @@ class LoanService:
         except exc.LoanNotFoundError:
             return False
 
-    ### RETRIEVE LOAN INFORMATION
+    ### GLOBAL RETRIEVE
+
+    def get_all_loans(self):
+        """Method to retrieve all loans list from database"""
+
+        return self.loan_data_service.get_all_loans_list()
 
     def get_active_loans(self):
         """Method to retrieve loans list that are currently active"""
 
         try:
-            all_loans = self.loan_data_service.get_all_loans_list()
+            all_loans = self.get_all_loans()
         except exc.LoanNotFoundError:
-            return []
+            all_loans = []
 
         active_loans = []
 
@@ -125,10 +130,21 @@ class LoanService:
 
         return active_loans
 
+    def get_loan_by_id(self, loan_id):
+        """Method to retrieve loan details by loan id"""
+        pass
+
+    def get_overdue_books(self):
+        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
+        pass
+
     ### STATUS CHECKS
 
     def is_book_borrowed(self, book_id):
-        """Checking if the book is borrowed to quickly confirm its status
+        """
+        METHOD NOT FINISHED YET
+
+        Checking if the book is borrowed to quickly confirm its status
 
         retrurns True if book is borrwed and False if book is available
 
@@ -245,20 +261,6 @@ class LoanService:
 
     def return_book(self, loan_id):
         """Method to enable user return the borrowed books. It also verifies if the loan exits before further actions."""
-        pass
-
-    ### GLOBAL RETRIEVE
-
-    def get_all_loans(self):
-        """Method to retrieve all loans list from database"""
-        pass
-
-    def get_loan_by_id(self, loan_id):
-        """Method to retrieve loan details by loan id"""
-        pass
-
-    def get_overdue_books(self):
-        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
         pass
 
     ### RESERVATIONS
