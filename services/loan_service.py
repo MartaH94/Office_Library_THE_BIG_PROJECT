@@ -141,7 +141,30 @@ class LoanService:
         """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
 
         self.book_service.ensure_book_exists(book_id)
-        self.is_book_borrowed(book_id)
+
+        if not self.is_book_borrowed(book_id):
+            return False
+
+        active_loans = self.get_active_loans()
+
+        return_date = None
+
+        today = datetime.now().date()
+
+        for loan in active_loans:
+            if loan["book_id"] == book_id:
+                return_date = loan["return_date"]
+                break
+
+        if not return_date:
+            return False
+
+        return_date = datetime.strptime(return_date, "%Y-%m-%d").date()
+
+        if today > return_date:
+            return True
+
+        return False
 
     ### USER‑FOCUSED RETRIEVE
 
