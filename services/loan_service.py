@@ -232,7 +232,32 @@ class LoanService:
 
     def get_books_borrowed_by_user(self, user_id):
         """Method to retrieve the list of books borrowed by current user"""
-        pass
+
+        if user_id is None:
+            raise exc.DataError(
+                "Please provide user ID to retrieve list with books borrowed by user."
+            )
+
+        if not isinstance(user_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of user ID to retrieve list with books borrowed by user."
+            )
+
+        active_loans = self.get_active_loans()
+
+        user_loans = []
+
+        for loan in active_loans:
+            if loan["user_id"] == user_id:
+                user_loans.append(loan)
+
+        user_books = []
+
+        for loan in user_loans:
+            book = self.book_service.get_book_by_id(loan["book_id"])
+            user_books.append(book)
+
+        return user_books
 
     def get_user_overdue_books(self):
         pass
