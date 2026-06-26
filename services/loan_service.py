@@ -88,12 +88,12 @@ class LoanService:
 
     ### CORE
 
-    def get_all_loans(self):
+    def get_all_loans(self):  # done
         """Method to retrieve all loans list from database"""
 
         return self.loan_data_service.get_all_loans_list()
 
-    def get_loan_by_id(self, loan_id):
+    def get_loan_by_id(self, loan_id):  # done
         """Method to retrieve loan details by loan id"""
 
         if loan_id is None:
@@ -114,7 +114,7 @@ class LoanService:
 
     ### EXISTENCE CHECKS
 
-    def loan_exists_by_id(self, loan_id):
+    def loan_exists_by_id(self, loan_id):  # done
         """Check whether a loan with the given ID exists in the database.
 
         This method performs a non-raising existence check based on loan ID.
@@ -132,7 +132,7 @@ class LoanService:
         except exc.LoanNotFoundError:
             return False
 
-    def ensure_loan_exists(self, loan_id):
+    def ensure_loan_exists(self, loan_id):  # done
         """Ensure that a loan with the given ID exists in the database.
 
         This method validates existence and raises an exception if the loan
@@ -150,7 +150,7 @@ class LoanService:
 
     ### GLOBAL RETRIEVE
 
-    def get_active_loans(self):
+    def get_active_loans(self):  # done
         """Method to retrieve loans list that are currently active"""
 
         try:
@@ -168,15 +168,22 @@ class LoanService:
 
     def get_overdue_books(self):
         """
-        METHOD NOT DONE YET
-
         Method to retrieve the list of all books that are borrowed and its return date has gone.
         """
 
-        try:
-            all_loans = self.get_all_loans()
-        except exc.LoanNotFoundError:
-            all_loans = []
+        active_loans = self.get_active_loans()
+
+        overdue_loans = []
+
+        today = datetime.now().date()
+
+        for loan in active_loans:
+            return_date_str = loan["return_date"]
+            return_date = datetime.strptime(return_date_str, "%Y-%m-%d").date()
+            if today > return_date:
+                overdue_loans.append(loan)
+
+        return overdue_loans
 
     ### VALIDATION HELPERS
 
