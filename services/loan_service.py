@@ -107,6 +107,24 @@ class LoanService:
         except exc.LoanNotFoundError:
             return False
 
+    ### RETRIEVE LOAN INFORMATION
+
+    def get_active_loans(self):
+        """Method to retrieve loans list that are currently active"""
+
+        try:
+            all_loans = self.loan_data_service.get_all_loans_list()
+        except exc.LoanNotFoundError:
+            return []
+
+        active_loans = []
+
+        for loan in all_loans:
+            if loan["return_date"] is None:
+                active_loans.append(loan)
+
+        return active_loans
+
     ### STATUS CHECKS
 
     def is_book_borrowed(self, book_id):
@@ -121,7 +139,9 @@ class LoanService:
 
     def is_book_overdue(self, book_id):
         """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
-        pass
+
+        self.book_service.ensure_book_exists(book_id)
+        self.is_book_borrowed(book_id)
 
     ### USER‑FOCUSED RETRIEVE
 
@@ -208,10 +228,6 @@ class LoanService:
 
     def get_all_loans(self):
         """Method to retrieve all loans list from database"""
-        pass
-
-    def get_active_loans(self):
-        """Method to retrieve loans list that are currently active"""
         pass
 
     def get_loan_by_id(self, loan_id):
