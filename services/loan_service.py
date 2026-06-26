@@ -132,7 +132,22 @@ class LoanService:
 
     def get_loan_by_id(self, loan_id):
         """Method to retrieve loan details by loan id"""
-        pass
+
+        if not isinstance(loan_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of loan ID to retrieve loan data"
+            )
+
+        if loan_id is None:
+            raise exc.DataError("Please provide loan ID to retrieve data.")
+
+        all_loans = self.get_all_loans()
+
+        for loan in all_loans:
+            if loan_id == loan.get("loan_id"):
+                return Loan(**loan)
+
+        raise exc.LoanNotFoundError(f"Loan with ID: {loan_id} not found in database.")
 
     def get_overdue_books(self):
         """Method to retrieve the list of all books that are borrowed and its return date has gone."""
