@@ -86,20 +86,45 @@ class LoanService:
         # Authorisation Service
         self.user_authorisation_service = UserAuthorisation()
 
-    ### VALIDATION HELPERS
+    ### CORE
 
-    def ensure_user_has_permission_to_borrow(self):
-        """Veryfing that the currently logged-in user have permissions to borrow the book."""
-        self.user_authorisation_service.check_permission("books.borrow_book")
+    def get_all_loans(self):
+        """Method to retrieve all loans list from database"""
 
-    def ensure_book_available(self, book_id):
-        """Veryfing that book status is 'available' and book can be borrowed by user."""
+        return self.loan_data_service.get_all_loans_list()
 
-        if not self.book_service.is_book_available(book_id=book_id):
-            raise exc.BookNotAvailableError("Book is currently unavailable.")
+    def get_loan_by_id(self, loan_id):
+        """Method to retrieve loan details by loan id"""
 
-    def ensure_loan_exists(self, loan_id):
-        """This method is for veryfing if the loan entry exists in database."""
+        if loan_id is None:
+            raise exc.DataError("Please provide loan ID to retrieve loan data.")
+
+        if not isinstance(loan_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of loan ID to retrieve loan data."
+            )
+
+        all_loans = self.get_all_loans()
+
+        for loan in all_loans:
+            if loan_id == loan.get("loan_id"):
+                return Loan(**loan)
+
+        raise exc.LoanNotFoundError(f"Loan with ID: {loan_id} not found in database.")
+
+    ### EXISTENCE CHECKS
+
+    def loan_exists_by_id(self, loan_id):
+        """Check whether a loan with the given ID exists in the database.
+
+        This method performs a non-raising existence check based on loan ID.
+
+        Args:
+            loan_id (int): The ID of the loan to check.
+
+        Returns:
+            bool: True if the loan exists, False otherwise.
+        """
 
         try:
             self.get_loan_by_id(loan_id)
@@ -107,12 +132,23 @@ class LoanService:
         except exc.LoanNotFoundError:
             return False
 
+    def ensure_loan_exists(self, loan_id):
+        """Ensure that a loan with the given ID exists in the database.
+
+        This method validates existence and raises an exception if the loan
+        does not exist. It is intended to be used before operations that
+        require a valid loan.
+
+        Args:
+            loan_id (int): The ID of the loan to validate.
+
+        Raises:
+            LoanNotFoundError: If no loan with the given ID exists.
+        """
+
+        self.get_loan_by_id(loan_id)
+
     ### GLOBAL RETRIEVE
-
-    def get_all_loans(self):
-        """Method to retrieve all loans list from database"""
-
-        return self.loan_data_service.get_all_loans_list()
 
     def get_active_loans(self):
         """Method to retrieve loans list that are currently active"""
@@ -130,28 +166,29 @@ class LoanService:
 
         return active_loans
 
-    def get_loan_by_id(self, loan_id):
-        """Method to retrieve loan details by loan id"""
-
-        if not isinstance(loan_id, int):
-            raise exc.DataTypeError(
-                "Please provide correct type of loan ID to retrieve loan data"
-            )
-
-        if loan_id is None:
-            raise exc.DataError("Please provide loan ID to retrieve data.")
-
-        all_loans = self.get_all_loans()
-
-        for loan in all_loans:
-            if loan_id == loan.get("loan_id"):
-                return Loan(**loan)
-
-        raise exc.LoanNotFoundError(f"Loan with ID: {loan_id} not found in database.")
-
     def get_overdue_books(self):
-        """Method to retrieve the list of all books that are borrowed and its return date has gone."""
-        pass
+        """
+        METHOD NOT DONE YET
+
+        Method to retrieve the list of all books that are borrowed and its return date has gone.
+        """
+
+        try:
+            all_loans = self.get_all_loans()
+        except exc.LoanNotFoundError:
+            all_loans = []
+
+    ### VALIDATION HELPERS
+
+    def ensure_user_has_permission_to_borrow(self):
+        """Veryfing that the currently logged-in user have permissions to borrow the book."""
+        self.user_authorisation_service.check_permission("books.borrow_book")
+
+    def ensure_book_available(self, book_id):
+        """Veryfing that book status is 'available' and book can be borrowed by user."""
+
+        if not self.book_service.is_book_available(book_id=book_id):
+            raise exc.BookNotAvailableError("Book is currently unavailable.")
 
     ### STATUS CHECKS
 
