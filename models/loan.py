@@ -1,9 +1,13 @@
 # loan class with attributes and methods (who borrowed the book, when it was borrowed, when it was returned)
 
 """
-To do:
-- update module docstring
+________________________________________________________
+models.loan
+========================================================
+Module for defining the Loan class and Reservation class.
+________________________________________________________
 
+This module contains the definition of the Loan class, which represents a loan of a book to a user, and the Reservation class, which represents a reservation of a book by a user. The Loan class includes attributes such as user ID, book ID, loan date, and return date. The Reservation class includes attributes such as user ID, book ID, and reservation date.
 
 """
 
@@ -21,6 +25,8 @@ class Loan:
         self.return_date = return_date
 
     def to_dict(self):
+        """This method converts the Loan object into a dictionary representation."""
+
         return {
             "loan_id": self.loan_id,
             "user_id": self.user_id,

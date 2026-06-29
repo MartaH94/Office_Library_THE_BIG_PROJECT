@@ -1,9 +1,11 @@
-# book class with atrbutes and methods
-
 """
-TO DO:
-Update module docstring
-add docstring in Book class and Book category
+________________________________________________________
+models.book
+========================================================
+Module for defining the Book class and BookCategory class.
+________________________________________________________
+
+This module contains the definition of the Book class, which represents a book in the library system, and the BookCategory class, which represents a category of books. The Book class includes attributes such as author, title, publication year, ISBN, category, language, status, borrower ID, due date, and last loan date. The BookCategory class allows for grouping books into categories.
 
 """
 
@@ -35,6 +37,8 @@ class Book:
         self.last_loan_date: str | None = None
 
     def to_dict(self):
+        """This method converts the Book object into a dictionary representation."""
+
         return {
             "book_id": self.book_id,
             "author": self.author,
@@ -56,4 +60,6 @@ class BookCategory:
         self.books = []
 
     def add_book(self, book):
+        """This method adds a book to the category's list of books. It takes a Book object as an argument and appends it to the books list of the category."""
+
         self.books.append(book)
