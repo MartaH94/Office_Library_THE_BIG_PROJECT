@@ -1,5 +1,3 @@
-# managing loan operations like: borrow, return, view loans, check book availability
-
 """
 ________________________________________________________
 services.loan_service

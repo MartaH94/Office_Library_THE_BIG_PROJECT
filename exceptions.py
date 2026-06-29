@@ -1,4 +1,13 @@
-# Exceptions to ignore in the project.
+"""
+________________________________________________________
+exceptions
+========================================================
+Module for defining custom exceptions used in the library management system.
+________________________________________________________
+
+This module contains custom exception classes that are used throughout the library management system. These exceptions are organized into categories based on their purpose, such as book-related exceptions, loan and reservation exceptions, user and authentication exceptions, general utility exceptions, and security exceptions. Each exception class provides a specific error message and can be raised when certain conditions are met in the application.
+
+"""
 
 
 # ------------------------------

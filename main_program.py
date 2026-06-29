@@ -13,7 +13,8 @@
 # │   ├── __init__.py
 # │   ├── book_service.py
 # │   ├── loan_service.py
-# │   └── auth_service.py
+# │   ├── user_service.py
+# │   └── authorisation_service.py
 # │
 # ├── gui/
 # │   ├── __init__.py
@@ -25,9 +26,14 @@
 # │   ├── __init__.py
 # │   ├── config.py
 # │   ├── validators.py
+# │   ├── security_helpers.py
 # │   └── helpers.py
 # │
 # ├── database/
-# │   └── db_manager.py
+# │   └── database_schemes.py
+# │   ├── json_files_major_services.py
+# │   ├── book_json_file_service.py
+# │   └── user_json_file_service.py
+# │   └── loan_json_file_service.py
 # │
 # └── exceptions.py

@@ -1,6 +1,12 @@
-# small functions used across the project, eg. generating book IDs, date formatting, etc.
-
 """
+________________________________________________________
+utils.helpers
+========================================================
+Module for defining helper functions used across the library management system.
+________________________________________________________
+
+
+
 TO DO HERE:
 - update module docstring
 - implement function generate loan id

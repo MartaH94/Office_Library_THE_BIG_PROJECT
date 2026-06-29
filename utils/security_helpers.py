@@ -1,4 +1,11 @@
 """
+________________________________________________________
+utils.security_helpers
+========================================================
+Module for defining security helpers like password hashing and verification.
+________________________________________________________
+
+
 This module contains security helpers like password hashing and verification.
 """
 

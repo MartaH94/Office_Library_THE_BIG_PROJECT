@@ -1,4 +1,12 @@
-# basic settings of the project like file paths, database parameters, etc.
+"""
+________________________________________________________
+utils.config
+========================================================
+Module for defining configuration settings for the library management system.
+________________________________________________________
+
+This module contains configuration settings for the library management system. It defines file paths for storing program data, including lists of loans, reservations, program users, single user loan history, and the library catalog. The module also specifies a directory for backing up program data and provides a project alias for identification purposes.
+"""
 
 import json
 import os
