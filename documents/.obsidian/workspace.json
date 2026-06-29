@@ -35,12 +35,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "My Awesome Library Project/5. How It Works (High-Level) Purpose.md",
+                "file": "My Awesome Library Project/6. Technical Architecture Purpose.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "5. How It Works (High-Level) Purpose"
+              "title": "6. Technical Architecture Purpose"
             }
           }
         ]
@@ -207,18 +207,18 @@
   },
   "active": "4cc7b84431ed40bb",
   "lastOpenFiles": [
+    "My Awesome Library Project/7. Data & Core Logic Purpose.md",
+    "My Awesome Library Project/9. Project glossary.md",
+    "My Awesome Library Project/The Awesome Library Project - Project Overview.md",
+    "My Awesome Library Project/8. Limitations & Future Purpose.md",
+    "My Awesome Library Project/6. Technical Architecture Purpose.md",
+    "My Awesome Library Project/5. How It Works (High-Level) Purpose.md",
     "My Awesome Library Project/4. Users & Use Cases Purpose.md",
     "My Awesome Library Project/3. Scope & Capabilities Purpose.md",
     "My Awesome Library Project/2. Problem & Motivation Purpose.md",
     "My Awesome Library Project/1. Overview.md",
-    "My Awesome Library Project/6. Technical Architecture Purpose.md",
     "Untitled 1.base",
     "Untitled.base",
-    "My Awesome Library Project/The Awesome Library Project - Project Overview.md",
-    "My Awesome Library Project/9. Project glossary.md",
-    "My Awesome Library Project/8. Limitations & Future Purpose.md",
-    "My Awesome Library Project/7. Data & Core Logic Purpose.md",
-    "My Awesome Library Project/5. How It Works (High-Level) Purpose.md",
     "Untitled 1.md"
   ]
 }
