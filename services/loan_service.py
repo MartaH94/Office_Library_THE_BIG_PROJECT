@@ -7,6 +7,9 @@ services.loan_service
 Service for managing loans-related operations.
 ________________________________________________________
 
+This module defines the `LoanService` class, which is responsible for handling all operations related to loans and reservations in the system. It interacts with the storage layer (JSON service) to perform CRUD operations and provides high-level methods for working with loan data.
+
+
 file status: in progress
 
 """
@@ -40,6 +43,8 @@ from utils.helpers import generate_loan_id, generate_reservation_id
 
 
 class LoanService:
+    """The LoanService class is responsible for managing all operations related to loans and reservations in the system. It provides methods for borrowing and returning books, checking book availability, retrieving loan and reservation data, and ensuring user permissions. The service interacts with the storage layer (JSON service) to perform CRUD operations on loan and reservation records."""
+
     def __init__(self, loan_json_service=None):
 
         # JSON file services
@@ -89,12 +94,12 @@ class LoanService:
     ### CORE
 
     def get_all_loans(self):  # done
-        """Method to retrieve all loans list from database"""
+        """This method retrieves all loan records from the database. It interacts with the loan data service to fetch the list of loans. If no loans are found, it raises a `LoanNotFoundError` exception. The method returns a list of loan dictionaries representing all loans in the system."""
 
         return self.loan_data_service.get_all_loans_list()
 
     def get_loan_by_id(self, loan_id):  # done
-        """Method to retrieve loan details by loan id"""
+        """This method retrieves a specific loan record by its ID. It checks if the provided loan ID is valid and exists in the database. If the loan is found, it returns a `Loan` object representing the loan data. If the loan ID is not provided or is of an incorrect type, it raises appropriate exceptions. If no loan with the given ID exists, it raises a `LoanNotFoundError` exception."""
 
         if loan_id is None:
             raise exc.DataError("Please provide loan ID to retrieve loan data.")
@@ -115,16 +120,7 @@ class LoanService:
     ### EXISTENCE CHECKS
 
     def loan_exists_by_id(self, loan_id):  # done
-        """Check whether a loan with the given ID exists in the database.
-
-        This method performs a non-raising existence check based on loan ID.
-
-        Args:
-            loan_id (int): The ID of the loan to check.
-
-        Returns:
-            bool: True if the loan exists, False otherwise.
-        """
+        """This method checks if a loan with the given ID exists in the database. It attempts to retrieve the loan using the `get_loan_by_id` method. If the loan is found, it returns True; otherwise, it returns False. This method is useful for fetching loan details based on the loan ID."""
 
         try:
             self.get_loan_by_id(loan_id)
@@ -133,25 +129,14 @@ class LoanService:
             return False
 
     def ensure_loan_exists(self, loan_id):  # done
-        """Ensure that a loan with the given ID exists in the database.
-
-        This method validates existence and raises an exception if the loan
-        does not exist. It is intended to be used before operations that
-        require a valid loan.
-
-        Args:
-            loan_id (int): The ID of the loan to validate.
-
-        Raises:
-            LoanNotFoundError: If no loan with the given ID exists.
-        """
+        """This method ensures that a loan with the given ID exists. This method is used before the operations that require the loan to exist. It enforces corectness by raising an exception if the loan is missing."""
 
         self.get_loan_by_id(loan_id)
 
     ### GLOBAL RETRIEVE
 
     def get_active_loans(self):  # done
-        """Method to retrieve loans list that are currently active"""
+        """This method retrieves all active loans from the database. Active loans are defined as loans where the return date is not set (i.e., the book has not been returned yet). The method fetches all loans and filters them to include only those that are currently active. If no loans are found, it returns an empty list."""
 
         try:
             all_loans = self.get_all_loans()
@@ -167,9 +152,7 @@ class LoanService:
         return active_loans
 
     def get_overdue_books(self):  # done
-        """
-        Method to retrieve the list of all books that are borrowed and its return date has gone.
-        """
+        """This method retrieves all overdue loans from the database. Overdue loans are defined as active loans where the return date has passed the current date. The method fetches all active loans and checks their return dates against the current date. If a loan is found to be overdue, it is added to the list of overdue loans. The method returns a list of dictionaries representing the overdue loans. If no overdue loans are found, it returns an empty list."""
 
         active_loans = self.get_active_loans()
 
@@ -188,7 +171,7 @@ class LoanService:
     ### VALIDATION HELPERS
 
     def ensure_user_has_permission_to_borrow(self):  # done
-        """Veryfing that the currently logged-in user have permissions to borrow the book."""
+        """This method checks if the current user has permission to borrow a book. It uses the `UserAuthorisation` service to verify the user's permissions. If the user does not have the required permission, it raises a `PermissionError` exception."""
         self.user_authorisation_service.check_permission("books.borrow_book")
 
     def ensure_book_available(self, book_id):  # done
@@ -199,21 +182,14 @@ class LoanService:
 
     ### STATUS CHECKS
 
-    def is_book_borrowed(self, book_id):  # done
-        """
-        METHOD NOT FINISHED YET
-
-        Checking if the book is borrowed to quickly confirm its status
-
-        retrurns True if book is borrwed and False if book is available
-
-        """
+    def is_book_borrowed(self, book_id):
+        """This method checks if a book is currently borrowed. It retrieves the book by its ID using the `BookService` and checks its status. If the book's status is "borrowed," it returns True; otherwise, it returns False. This method is useful for determining whether a specific book is currently checked out or available for borrowing."""
         book = self.book_service.get_book_by_id(book_id)
 
         return book.book_status == "borrowed"
 
     def is_book_overdue(self, book_id):  # done
-        """Checking if the book is overdue. Checking is for single book in library and it is checked by book id."""
+        """This method checks if a book is currently overdue. It first ensures that the book exists using the `BookService`. Then, it checks if the book is currently borrowed. If the book is not borrowed, it returns False. If the book is borrowed, it retrieves the list of overdue loans and checks if the specific book ID is present in that list. If the book is found in the overdue loans, it returns True; otherwise, it returns False."""
 
         self.book_service.ensure_book_exists(book_id)
 
@@ -231,7 +207,7 @@ class LoanService:
     ### USER‑FOCUSED RETRIEVE
 
     def get_books_borrowed_by_user(self, user_id):  # done
-        """Method to retrieve the list of books borrowed by current user"""
+        """This method retrieves a list of books currently borrowed by a specific user. It first checks if the provided user ID is valid and exists in the database. Then, it fetches all active loans and filters them to include only those associated with the given user ID. For each loan found, it retrieves the corresponding book details using the `BookService`. The method returns a list of dictionaries representing the books borrowed by the user. If no books are found for the user, it returns an empty list."""
 
         if user_id is None:
             raise exc.DataError(
@@ -260,6 +236,7 @@ class LoanService:
         return user_books
 
     def get_user_overdue_books(self, user_id):  # done
+        """This method retrieves a list of overdue books for a specific user. It first checks if the provided user ID is valid and exists in the database. Then, it fetches all books borrowed by the user and checks each book to determine if it is overdue using the `is_book_overdue` method. The method returns a list of dictionaries representing the overdue books for the user. If no overdue books are found, it returns an empty list."""
 
         if user_id is None:
             raise exc.DataError("Please provide user ID to retrieve user overdue books")
