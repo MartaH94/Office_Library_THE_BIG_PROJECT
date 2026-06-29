@@ -272,7 +272,7 @@ class LoanService:
             Loan: A Loan object representing the newly created loan record.
         """
 
-        if not book_id:
+        if book_id is None:
             raise exc.BookValidationError(
                 "Please provide book ID to proceed borrowing the book."
             )
@@ -285,25 +285,24 @@ class LoanService:
         if not current_user:
             raise exc.PermissionError("User must be logged in to borrow a book.")
 
-        # I have method ensure_user_can_borrow. I want to replace line below with calling this helper method.
-        self.user_authorisation_service.check_permission("books.borrow_book")
+        self.ensure_user_has_permission_to_borrow()
 
-        self.book_service.ensure_book_exists(book_id)
-
-        if not self.book_service.is_book_available(book_id):
-            raise exc.BookNotAvailableError("Book is currently unavailable.")
+        self.ensure_book_available(book_id)
 
         now = datetime.now()
+
+        loan_date = now.strftime("%Y-%m-%d")
+        return_date = (now + timedelta(days=21)).strftime("%Y-%m-%d")
 
         new_loan = Loan(
             user_id=current_user.user_id,
             book_id=book_id,
-            loan_date=now.strftime("%Y-%m-%d"),
-            return_date=(now + timedelta(days=21)).strftime("%Y-%m-%d"),
+            loan_date=loan_date,
+            return_date=return_date,
         )
 
         try:
-            all_loans = self.loan_data_service.get_all_loans_list()
+            all_loans = self.get_all_loans()
         except exc.LoanNotFoundError:
             all_loans = []
 
