@@ -6,7 +6,7 @@
       {
         "id": "990e81ec69e83b0b",
         "type": "tabs",
-        "dimension": 35.02139800285307,
+        "dimension": 31.02710413694722,
         "children": [
           {
             "id": "3567b6b933f5f2c8",
@@ -27,7 +27,7 @@
       {
         "id": "c9ebc49bc66d4eb1",
         "type": "tabs",
-        "dimension": 64.97860199714694,
+        "dimension": 68.97289586305278,
         "children": [
           {
             "id": "4cc7b84431ed40bb",
@@ -100,7 +100,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 250.50852584838867
   },
   "right": {
     "id": "780eef080da6ff91",
@@ -205,16 +205,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "4cc7b84431ed40bb",
+  "active": "2cd8b92ead14f3d5",
   "lastOpenFiles": [
+    "My Awesome Library Project/5. How It Works (High-Level) Purpose.md",
+    "My Awesome Library Project/6. Technical Architecture Purpose.md",
+    "My Awesome Library Project/4. Users & Use Cases Purpose.md",
+    "My Awesome Library Project/3. Scope & Capabilities Purpose.md",
     "My Awesome Library Project/7. Data & Core Logic Purpose.md",
     "My Awesome Library Project/9. Project glossary.md",
     "My Awesome Library Project/The Awesome Library Project - Project Overview.md",
     "My Awesome Library Project/8. Limitations & Future Purpose.md",
-    "My Awesome Library Project/6. Technical Architecture Purpose.md",
-    "My Awesome Library Project/5. How It Works (High-Level) Purpose.md",
-    "My Awesome Library Project/4. Users & Use Cases Purpose.md",
-    "My Awesome Library Project/3. Scope & Capabilities Purpose.md",
     "My Awesome Library Project/2. Problem & Motivation Purpose.md",
     "My Awesome Library Project/1. Overview.md",
     "Untitled 1.base",
