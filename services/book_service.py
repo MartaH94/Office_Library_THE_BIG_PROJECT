@@ -6,7 +6,7 @@ Service for managing book-related operations.
 ________________________________________________________
 
 This module defines the `BookService` class responsible for handling all operations
-related to books in the system. It interacts with the storage layer (e.g. JSON service)
+related to books in the system. It interacts with the storage layer (JSON service)
 to perform CRUD operations and provides high-level methods for working with book data.
 
 
@@ -25,15 +25,20 @@ from utils.helpers import generate_book_id
 
 
 class BookService:
+    """This class provides methods to manage book-related operations, including retrieval, addition, updating, deletion, and searching of books. It interacts with the `BookJsonFileService` for data persistence."""
+
     def __init__(self, book_json_service: BookJsonFileService):
         self.book_json_service = book_json_service
 
     ### CORE
 
     def get_all_books(self):
+        """This method retrieves all books from the storage layer and returns them as a list of dictionaries."""
+
         return self.book_json_service.get_all_books_list()
 
     def get_book_by_id(self, book_id):
+        """This method retrieves a book by its ID. It raises exceptions if the ID is not provided, is of incorrect type, or if the book is not found. This method is useful for fetching specific book details based on the unique identifier."""
 
         if book_id is None:
             raise exc.DataError("Please provide book ID to retrieve book data.")
@@ -54,6 +59,9 @@ class BookService:
     ### EXISTENCE CHECKS
 
     def book_exists_by_id(self, book_id):
+        """This method checks if a book exists by its ID. It returns True if the book exists, and False otherwise. It raises exceptions if the ID is not provided or is of incorrect type. This method is used for conditional checks when the program needs to decide what to do depending on whether the book exists.
+        It does not raise an exception if the book is missing.
+        """
 
         try:
             self.get_book_by_id(book_id)
@@ -62,15 +70,14 @@ class BookService:
             return False
 
     def ensure_book_exists(self, book_id):
+        """This method ensures that a book with the given ID exists. This method is used before operations that require the book to be present (e.g update, delete). It enforces correctness by raising an exception if the book is missing."""
 
         self.get_book_by_id(book_id)
 
     ### CORE
 
     def add_book(self, book: Book):
-        """
-        Add validation of: type book (if it is a correct book object), title, author, year
-        """
+        """This method adds a new book to the storage layer. It performs validation checks on the provided `Book` object, ensuring that all required fields are present and valid. If the book is valid, it generates a unique book ID and saves the book data using the `BookJsonFileService`. It raises exceptions for invalid data types, missing fields, or invalid publication years."""
 
         if not isinstance(book, Book):
             raise exc.DataTypeError("Please provide book as a book object")
@@ -99,6 +106,8 @@ class BookService:
         return self.book_json_service.add_book_data(book.to_dict())
 
     def update_book_data(self, book_id, field, new_value):
+        """This method updates a specific field of a book identified by its ID. It performs validation checks on the provided `book_id`, `field`, and `new_value`. If the book exists and the inputs are valid, it updates the book data using the `BookJsonFileService`. It raises exceptions for invalid data types, missing fields, or if the book does not exist."""
+
         self.ensure_book_exists(book_id)
 
         if not isinstance(field, str):
@@ -117,6 +126,7 @@ class BookService:
         return updated_book_data
 
     def mark_book_as_borrowed(self, book_id, user_id, due_date, loan_date):
+        """This method marks a book as borrowed by updating its status and related fields. It takes the `book_id`, `user_id`, `due_date`, and `loan_date` as parameters. It first ensures that the book exists, then updates the relevant fields in the book's data to reflect that it has been borrowed. The method raises exceptions if the book does not exist or if any of the inputs are invalid."""
 
         self.ensure_book_exists(book_id)
 
@@ -126,6 +136,8 @@ class BookService:
         self.update_book_data(book_id, "book_status", "borrowed")
 
     def delete_book(self, book_id):
+        """This method deletes a book from the storage layer based on its ID. It first ensures that the book exists, then calls the `delete_book_by_id` method of the `BookJsonFileService` to remove the book data. It raises exceptions if the book does not exist or if the provided ID is invalid."""
+
         self.ensure_book_exists(book_id)
 
         return self.book_json_service.delete_book_by_id(book_id)
@@ -133,7 +145,8 @@ class BookService:
     ### SEARCH
 
     def get_books_by_keyword(self, keyword):
-        """MAIN SEARCH METHOD"""
+        """This method searches for books based on a provided keyword. It checks if the keyword is a valid string and not empty. The method retrieves all books and filters them based on whether the keyword is present in the book's title or author. It returns a list of matching `Book` objects. If no matches are found, it raises a `BookNotFoundError` exception."""
+
         if not isinstance(keyword, str):
             raise exc.DataTypeError(
                 "Please provide correct type of keyword to retrieve data."
@@ -164,6 +177,8 @@ class BookService:
         return search_results
 
     def get_books_by_year(self, year):
+        """This method searches for books based on a provided publication year. It checks if the year is a valid integer and within a reasonable range (1200 to 2050). The method retrieves all books and filters them based on whether their publication year matches the provided year. It returns a list of matching `Book` objects. If no matches are found, it raises a `BookNotFoundError` exception."""
+
         if not isinstance(year, int):
             raise exc.DataTypeError(
                 "Please provide correct type of year to retrieve data."
@@ -190,6 +205,8 @@ class BookService:
         return search_results
 
     def get_books_by_category(self, category):
+        """This method searches for books based on a provided category. It checks if the category is a valid string and not empty. The method retrieves all books and filters them based on whether their categories include the provided category. It returns a list of matching `Book` objects. If no matches are found, it raises a `BookNotFoundError` exception."""
+
         if not isinstance(category, str):
             raise exc.DataTypeError(
                 "Please provide correct type of category to retrieve data."
@@ -219,12 +236,14 @@ class BookService:
     ### AVAILABILITY
 
     def is_book_available(self, book_id):
+        """This method checks if a book is available for borrowing based on its ID. It retrieves the book using the `get_book_by_id` method and checks its status. If the book is available, it returns True; otherwise, it returns False. It raises exceptions if the book does not exist or if the provided ID is invalid."""
 
         book = self.get_book_by_id(book_id)
 
         return book.book_status == "available"
 
     def get_available_books(self):
+        """This method retrieves all books that are currently available for borrowing. It filters the list of all books based on their status and returns a list of `Book` objects that are marked as available. If no books are available, it raises a `BookNotAvailableError` exception."""
 
         all_books = self.get_all_books()
 
