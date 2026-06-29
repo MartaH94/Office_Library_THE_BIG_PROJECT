@@ -135,6 +135,12 @@ class BookService:
         self.update_book_data(book_id, "last_loan_date", loan_date)
         self.update_book_data(book_id, "book_status", "borrowed")
 
+    def mark_book_as_returned(self, book_id):
+
+        self.update_book_data(book_id, "borrower_id", None)
+        self.update_book_data(book_id, "due_date", None)
+        self.update_book_data(book_id, "book_status", "available")
+
     def delete_book(self, book_id):
         """This method deletes a book from the storage layer based on its ID. It first ensures that the book exists, then calls the `delete_book_by_id` method of the `BookJsonFileService` to remove the book data. It raises exceptions if the book does not exist or if the provided ID is invalid."""
 
