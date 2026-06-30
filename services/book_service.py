@@ -116,9 +116,6 @@ class BookService:
         if not field.strip():
             raise exc.ValidationError("Selected field to update is an empty value.")
 
-        if new_value is None:
-            raise exc.ValidationError("New value to update cannot be an empty value.")
-
         updated_book_data = self.book_json_service.update_book_data(
             book_id=book_id, field=field, new_value=new_value
         )
