@@ -256,6 +256,21 @@ class LoanService:
 
     ### CORE ACTIONS
 
+    def update_loan_data(self, loan_id, field, new_value):
+        self.ensure_loan_exists(loan_id)
+
+        if not isinstance(field, str):
+            raise exc.DataTypeError("Field name must be a string value type.")
+
+        if not field.strip():
+            raise exc.ValidationError("Selected field to update is an empty value.")
+
+        updated_loan_data = self.loan_data_service.update_loan_data(
+            loan_id=loan_id, field=field, new_value=new_value
+        )
+
+        return updated_loan_data
+
     def borrow_book(self, book_id):
         """This method requires refactoring!
 
@@ -323,7 +338,23 @@ class LoanService:
 
     def return_book(self, loan_id):
         """Method to enable user return the borrowed books. It also verifies if the loan exits before further actions."""
-        pass
+
+        current_loan = self.get_loan_by_id(loan_id)
+
+        if current_loan.return_date is not None:
+            raise exc.LoanError("Book is already returned.")
+
+        return_date = datetime.now().strftime("%Y-%m-%d")
+
+        self.update_loan_data(
+            loan_id=loan_id, field="return_date", new_value=return_date
+        )
+
+        self.book_service.mark_book_as_returned(current_loan.book_id)
+
+        current_loan.return_date = return_date
+
+        return current_loan
 
     ### RESERVATIONS
 
