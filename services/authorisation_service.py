@@ -360,6 +360,7 @@ class UserAuthorisation:
         self.logged_in_user = None
 
     def check_permission(self, action):
+        """This method checks the permission of the user. If user us not logged in, it sets the user role to 'guest'. Then the method checks if the user with its role has permission to perform the action. If not, it raises a PermissionError. If the user has permission, it returns True."""
 
         role = self.logged_in_user.role if self.logged_in_user else "guest"
 
@@ -371,4 +372,5 @@ class UserAuthorisation:
         return True
 
     def get_current_user(self):
+        """This method returns the currently logged-in user. If no user is logged in, it returns None."""
         return self.logged_in_user
