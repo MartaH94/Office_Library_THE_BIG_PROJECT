@@ -363,7 +363,11 @@ class LoanService:
 
         self.loan_data_service.get_all_reservation_list()
 
-    def reserve_book(self, user_id, book_id):  # IN PROGRESS
+    def ensure_user_has_permission_to_reserve(self):
+
+        self.user_authorisation_service.check_permission("books.reserve_books")
+
+    def reserve_book(self, book_id):  # IN PROGRESS
         """Method that enables user to reserve a book."""
 
         if book_id is None:
@@ -374,9 +378,12 @@ class LoanService:
         if not isinstance(book_id, int):
             raise exc.BookValidationError("Book ID must be a number.")
 
-        self.user_authorisation_service.check_permission("books.reserve_book")
+        current_user = self.user_authorisation_service.get_current_user()
 
-        self.ensure_book_available(book_id)
+        if not current_user:
+            raise exc.PermissionError("User must be logged in to reserve a book.")
+
+        self.ensure_user_has_permission_to_reserve()
 
         now = datetime.now()
 
@@ -390,14 +397,14 @@ class LoanService:
         reservation_id = generate_reservation_id(all_reservations)
 
         new_reservation = Reservation(
-            user_id=user_id, book_id=book_id, reservation_date=reservation_date
+            user_id=current_user.user_id,
+            book_id=book_id,
+            reservation_date=reservation_date,
         )
 
         new_reservation.reservation_id = reservation_id
 
         self.loan_data_service.add_reservation_data(new_reservation.to_dict())
-
-        self.book_service.mark_book_as_reserved(book_id, user_id)
 
         return new_reservation
 
