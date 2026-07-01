@@ -135,8 +135,8 @@ user_permissions = {
         "books": {
             "borrow_book": False,
             "return_book": False,
-            "reserve_book": True,
-            "cancel_reservation": True,
+            "reserve_book": False,
+            "cancel_reservation": False,
             "add_book": False,
             "edit_book": False,
             "delete_book": False,
