@@ -48,3 +48,12 @@ class Reservation:
         self.user_id = user_id
         self.book_id = book_id
         self.reservation_date = reservation_date
+
+    def to_dict(self):
+
+        return {
+            "resrvation_id": self.reservation_id,
+            "user_id": self.user_id,
+            "book_id": self.book_id,
+            "reservation_date": self.reservation_date,
+        }
