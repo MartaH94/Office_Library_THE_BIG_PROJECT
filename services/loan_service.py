@@ -358,9 +358,48 @@ class LoanService:
 
     ### RESERVATIONS
 
-    def reserve_book(self, user_id, book_id):
+    def get_all_reservations(self):
+        """Method that allows to retrieve a list with all reservations from database."""
+
+        self.loan_data_service.get_all_reservation_list()
+
+    def reserve_book(self, user_id, book_id):  # IN PROGRESS
         """Method that enables user to reserve a book."""
-        pass
+
+        if book_id is None:
+            raise exc.BookValidationError(
+                "Please provide book ID to proceed reservation the book."
+            )
+
+        if not isinstance(book_id, int):
+            raise exc.BookValidationError("Book ID must be a number.")
+
+        self.user_authorisation_service.check_permission("books.reserve_book")
+
+        self.ensure_book_available(book_id)
+
+        now = datetime.now()
+
+        reservation_date = now.strftime("%Y-%m-%d")
+
+        try:
+            all_reservations = self.get_all_reservations()
+        except exc.ReservationNotFoundError:
+            all_reservations = []
+
+        reservation_id = generate_reservation_id(all_reservations)
+
+        new_reservation = Reservation(
+            user_id=user_id, book_id=book_id, reservation_date=reservation_date
+        )
+
+        new_reservation.reservation_id = reservation_id
+
+        self.loan_data_service.add_reservation_data(new_reservation.to_dict())
+
+        self.book_service.mark_book_as_reserved(book_id, user_id)
+
+        return new_reservation
 
     def borrow_reserved_book(self):
         """Method that enables user to borrow the book which was reserved by user earlier."""
@@ -368,10 +407,6 @@ class LoanService:
 
     def cancel_reservation(self, reservation_id):
         """Method that enables user to cancel the book reservation."""
-        pass
-
-    def get_all_reservations(self):
-        """Method that allows to retrieve a list with all reservations from database."""
         pass
 
     def get_reservation_by_id(self):
