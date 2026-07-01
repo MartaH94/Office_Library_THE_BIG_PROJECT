@@ -358,16 +358,39 @@ class LoanService:
 
     ### RESERVATIONS
 
-    def get_all_reservations(self):
+    def get_all_reservations(self):  # DONE
         """Method that allows to retrieve a list with all reservations from database."""
 
-        self.loan_data_service.get_all_reservation_list()
+        return self.loan_data_service.get_all_reservation_list()
 
-    def ensure_user_has_permission_to_reserve(self):
+    def get_reservation_by_id(self, reservation_id):
+        """Method that allows to retrieve data about particular reservation by reservation id"""
+
+        if reservation_id is None:
+            raise exc.DataError(
+                "Please provide reservation ID to retrieve reservation data."
+            )
+
+        if not isinstance(reservation_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of reservation ID to retrieve reservation data."
+            )
+
+        all_reservations = self.get_all_reservations()
+
+        for reservation in all_reservations:
+            if reservation_id == reservation.get("reservaion_id"):
+                return Reservation(**reservation)
+
+        raise exc.ReservationNotFoundError(
+            f"Reservation with ID: {reservation_id} not found in database."
+        )
+
+    def ensure_user_has_permission_to_reserve(self):  # DONE
 
         self.user_authorisation_service.check_permission("books.reserve_books")
 
-    def reserve_book(self, book_id):  # IN PROGRESS
+    def reserve_book(self, book_id):  # DONE
         """Method that enables user to reserve a book."""
 
         if book_id is None:
@@ -414,10 +437,6 @@ class LoanService:
 
     def cancel_reservation(self, reservation_id):
         """Method that enables user to cancel the book reservation."""
-        pass
-
-    def get_reservation_by_id(self):
-        """Method that allows to retrieve data about particular reservation by reservation id"""
         pass
 
     def get_books_reserved_by_user(self, user_id):
