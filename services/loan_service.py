@@ -431,6 +431,10 @@ class LoanService:
 
         return new_reservation
 
+    def cancel_reservation(self, reservation_id):
+        """Method that enables user to cancel the book reservation."""
+        pass
+
     def borrow_reserved_book(self, reservation_id, user_id):  # IN PROGRESS
         """Method that enables user to borrow the book which was reserved by user earlier."""
 
@@ -454,14 +458,16 @@ class LoanService:
 
         book_reservation = self.get_reservation_by_id(reservation_id)
 
-        reserved_book_user_id = book_reservation.user_id
+        if user_id != book_reservation.user_id:
+            raise exc.PermissionError(
+                "User is not allowed to borrow this reserved book."
+            )
 
-        if user_id == reserved_book_user_id:
-            self.borrow_book(book_reservation.book_id)
+        new_loan = self.borrow_book(book_reservation.book_id)
 
-    def cancel_reservation(self, reservation_id):
-        """Method that enables user to cancel the book reservation."""
-        pass
+        # removing reservation by using method cancel_reservation
+
+        return new_loan
 
     def get_books_reserved_by_user(self, user_id):
         """Method to get the list with all acvtive reservations of books by particular user."""
