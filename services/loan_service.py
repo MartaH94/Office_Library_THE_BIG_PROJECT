@@ -489,4 +489,29 @@ class LoanService:
 
     def get_books_reserved_by_user(self, user_id):
         """Method to get the list with all acvtive reservations of books by particular user."""
-        pass
+
+        if user_id is None:
+            raise exc.DataError(
+                "Please provide user ID to retrieve list with books reserved by user."
+            )
+
+        if not isinstance(user_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of user ID to retrieve list with books reserved by user."
+            )
+
+        all_reservations = self.get_all_reservations()
+
+        user_reservations = []
+
+        for reservation in all_reservations:
+            if reservation["user_id"] == user_id:
+                user_reservations.append(reservation)
+
+        user_reserved_books = []
+
+        for reservation in user_reservations:
+            book = self.book_service.get_book_by_id(reservation["book_id"])
+            user_reserved_books.append(book)
+
+        return user_reserved_books
