@@ -432,8 +432,31 @@ class LoanService:
         return new_reservation
 
     def cancel_reservation(self, reservation_id):
-        """Method that enables user to cancel the book reservation."""
-        pass
+        """Method that enables to cancel the book reservation."""
+
+        if reservation_id is None:
+            raise exc.DataError(
+                "Please provide reservation ID number to proceed cancellation process."
+            )
+
+        if not isinstance(reservation_id, int):
+            raise exc.DataTypeError(
+                "Please provide correct type of reservation ID to proceed cancellation process."
+            )
+
+        current_reservation = self.get_reservation_by_id(reservation_id)
+
+        current_user = self.user_authorisation_service.get_current_user()
+
+        if not current_user:
+            raise exc.PermissionError("User must be logged in.")
+
+        if current_user.user_id != current_reservation.user_id:
+            raise exc.PermissionError("User is not allowed to cancel book reservation.")
+
+        self.reservation_data_service.delete_reservation_data(reservation_id)
+
+        return current_reservation
 
     def borrow_reserved_book(self, reservation_id, user_id):  # IN PROGRESS
         """Method that enables user to borrow the book which was reserved by user earlier."""
